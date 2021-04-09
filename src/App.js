@@ -11,6 +11,7 @@ import BrowsePage from "./BrowsePage";
 import ItemDetails from "./ItemDetails";
 import Profile from "./Profile";
 import Offers from "./Offers";
+import LoginPage from "./LoginPage";
 
 function App() {
   return (
@@ -35,6 +36,9 @@ function App() {
           </Route>
           <Route exact path="">
             <Offers />
+          </Route>
+          <Route>
+            <LoginPage />
           </Route>
         </Wrapper>
       </Router>
