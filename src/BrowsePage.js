@@ -5,8 +5,6 @@ const BrowsePage = () => {
   return <Wrapper>BrowsePage</Wrapper>;
 };
 
-const Wrapper = styled.div`
-  grid-area: page;
-`;
+const Wrapper = styled.div``;
 
 export default BrowsePage;
