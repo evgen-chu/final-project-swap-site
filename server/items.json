@@ -1,0 +1,33 @@
+[{
+        "_id": "01",
+        "host_id": "1",
+        "name": "Scrabble",
+        "category": "Games",
+        "description": "very funny game",
+        "imageUrl": "/images/scrabble.jpg"
+    },
+    {
+        "_id": "02",
+        "host_id": "1",
+        "name": "Frisby",
+        "category": "Sports",
+        "description": "new frisby ",
+        "imageUrl": "/images/item-pics/02.jpg"
+    },
+    {
+        "_id": "03",
+        "host_id": "2",
+        "name": "Harry Potter",
+        "category": "Books",
+        "description": "nice book",
+        "imageUrl": "/images/item-pics/03.jpg"
+    },
+    {
+        "_id": "04",
+        "host_id": "2",
+        "name": "Chess",
+        "category": "Games",
+        "description": "new board, wooden",
+        "imageUrl": "/images/item-pics/04.jpg"
+    }
+]

@@ -5,7 +5,6 @@ import styled from "styled-components";
 
 import Header from "./Header";
 import Footer from "./Footer";
-import SideBar from "./SideBar";
 import LandingPage from "./LandingPage";
 import BrowsePage from "./BrowsePage";
 import ItemDetails from "./ItemDetails";
@@ -20,8 +19,6 @@ function App() {
       <Router>
         <Wrapper>
           <Header />
-          <SideBar />
-          <Footer />
           <Route exact path="/">
             <LandingPage />
           </Route>
@@ -34,10 +31,10 @@ function App() {
           <Route exact path="/profile/:userId">
             <Profile />
           </Route>
-          <Route exact path="">
+          <Route exact path="/offers">
             <Offers />
           </Route>
-          <Route>
+          <Route exact path="/login">
             <LoginPage />
           </Route>
         </Wrapper>
@@ -50,12 +47,8 @@ const Wrapper = styled.div`
   position: relative;
   width: 100%;
   height: 100vh;
-  display: grid;
-  grid-template-rows: 50px calc(100vh - 110px) 60px;
-  grid-template-areas:
-    "header header header"
-    "sidebar page page"
-    "footer footer footer";
+  display: flex;
+  flex-direction: column;
 `;
 
 export default App;

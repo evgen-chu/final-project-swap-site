@@ -1,0 +1,16 @@
+[{
+        "_id": "1",
+        "name": "Katya",
+        "avatarUrl": "/images/profile-pics/1.jpg"
+    },
+    {
+        "_id": "2",
+        "name": "Vasya",
+        "avatarUrl": "/images/profile-pics/2.jpg"
+    },
+    {
+        "_id": "3",
+        "name": "Masha",
+        "avatarUrl": "/images/profile-pics/3.jpg"
+    }
+]
