@@ -2,32 +2,53 @@
         "_id": "01",
         "host_id": "1",
         "name": "Scrabble",
-        "category": "Games",
-        "description": "very funny game",
+        "category": "Board Games",
+        "description": "Put letters together, build words, add up your points and win! This classic game features the classic Scrabble equipment for a big-time word-on-word showdown. Do you see a word your opponent hasn't seen? A double or triple letter or word space that will let you earn big points? Could the luck of the draw win you the game? Use your letters to score points and challenge your family and friends. It’s your word against theirs!",
+        "location": "Montreal, Old Port",
         "imageUrl": "/images/scrabble.jpg"
     },
     {
         "_id": "02",
         "host_id": "1",
-        "name": "Frisby",
+        "name": "Play Table",
         "category": "Sports",
-        "description": "new frisby ",
+        "description": "The toy helps you to experience the 7 amazing outdoor games sitting at just 1 place. Play and become the champion of each game. Here you get the 7 different games with accessories and coins. Just place the game chart in the table, challenge your friends and win the game. Quality of the material: the product comes with non-toxic and great finishing, which is very much safe and easy. Safety for child: the product comes with 100 percent child safety. The product comes with 7 different outdoor games, learn, play and experience these games and be the winner by challenging your friends. The product helps you to learn the things with playing and joy. It helps child to boost the mind-set and develop the skills. ",
+        "location": "Montreal, Rue St Denis",
         "imageUrl": "/images/item-pics/02.jpg"
     },
     {
         "_id": "03",
         "host_id": "2",
-        "name": "Harry Potter",
-        "category": "Books",
-        "description": "nice book",
+        "name": "Monopoly",
+        "category": "Board Games",
+        "description": "Monopoly, real-estate board game for two to eight players, in which the player’s goal is to remain financially solvent while forcing opponents into bankruptcy by buying and developing pieces of property.",
         "imageUrl": "/images/item-pics/03.jpg"
     },
     {
         "_id": "04",
         "host_id": "2",
-        "name": "Chess",
-        "category": "Games",
-        "description": "new board, wooden",
+        "name": "Dixit",
+        "category": "Board Games",
+        "description": "Card game where ach player starts the game with six random cards. Players then take turns being the storyteller. The player whose turn it is to be storyteller looks at the six images in his or her hand. From one of these, he or she makes up a sentence or phrase that might describe it and says it out loud (without showing the card to the other players).",
+        "location": "Laval",
+        "imageUrl": "/images/item-pics/04.jpg"
+    },
+    {
+        "_id": "05",
+        "host_id": "1",
+        "name": "Catan",
+        "category": "Board Games",
+        "description": "Catan, previously known as The Settlers of Catan or simply Settlers, is a multiplayer board game designed by Klaus Teuber. It was first published in 1995 in Germany by Franckh-Kosmos Verlag (Kosmos) as Die Siedler von Catan. Players take on the roles of settlers, each attempting to build and develop holdings while trading and acquiring resources. Players gain points as their settlements grow; the first to reach a set number of points, typically 10, wins. The game and its many expansions are also published by Catan Studio, Filosofia, GP, Inc., 999 Games, Κάισσα, and Devir.",
+        "location": "Montreal, Old Port",
+        "imageUrl": "/images/item-pics/04.jpg"
+    },
+    {
+        "_id": "06",
+        "host_id": "1",
+        "name": "Jenga",
+        "category": "Board Games",
+        "description": "Jenga is a game of physical skill created by British board game designer and author Leslie Scott, and currently marketed by Hasbro. Players take turns removing one block at a time from a tower constructed of 54 blocks. Each block removed is then placed on top of the tower, creating a progressively more unstable structure.",
+        "location": "Montreal, Old Port",
         "imageUrl": "/images/item-pics/04.jpg"
     }
 ]
