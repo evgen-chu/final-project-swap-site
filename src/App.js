@@ -1,5 +1,5 @@
-import React from "react";
-import { BrowserRouter as Router, Route } from "react-router-dom";
+import React, { useContext } from "react";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import GlobalStyles from "./GlobalStyles";
 import styled from "styled-components";
 
@@ -10,34 +10,34 @@ import BrowsePage from "./BrowsePage";
 import ItemDetails from "./ItemDetails";
 import Profile from "./Profile";
 import Offers from "./Offers";
-import LoginPage from "./LoginPage";
 
 function App() {
   return (
     <>
       <GlobalStyles />
+      <Header />
       <Router>
-        <Wrapper>
-          <Header />
-          <Route exact path="/">
-            <LandingPage />
-          </Route>
-          <Route>
-            <BrowsePage exact path="/items" />
-          </Route>
-          <Route>
-            <ItemDetails exact path="/items/:itemId" />
-          </Route>
-          <Route exact path="/profile/:userId">
-            <Profile />
-          </Route>
-          <Route exact path="/offers">
-            <Offers />
-          </Route>
-          <Route exact path="/login">
-            <LoginPage />
-          </Route>
-        </Wrapper>
+        <div>
+          <Switch>
+            <Route exact path="/profile">
+              <Profile />
+            </Route>
+            <Route exact path="/home">
+              <LandingPage />
+            </Route>
+
+            <Route exact path="/items/:itemId">
+              <ItemDetails />
+            </Route>
+            {/* <Route>
+              <BrowsePage exact path="/items" />
+            </Route> */}
+
+            <Route exact path="/offers">
+              <Offers />
+            </Route>
+          </Switch>
+        </div>
       </Router>
     </>
   );
