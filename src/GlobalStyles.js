@@ -3,13 +3,14 @@ import { createGlobalStyle } from "styled-components";
 export default createGlobalStyle`
 
 body {
-    background-color: #f0e7d5
+    background-color: 	#F0F8FF;
 }
 
 button {
-background-color: #50584b;
-color: white;
+background-color: #DCDCDC;
+color: black;
 font-family: 'Concert One', cursive;
+border: none;
 
 }
 

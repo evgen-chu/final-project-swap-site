@@ -15,11 +15,12 @@ function App() {
   return (
     <>
       <GlobalStyles />
-      <Header />
+
       <Router>
+        <Header />
         <div>
           <Switch>
-            <Route exact path="/profile">
+            <Route exact path="/profile/:userId">
               <Profile />
             </Route>
             <Route exact path="/home">
