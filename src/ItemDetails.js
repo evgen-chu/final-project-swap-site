@@ -2,47 +2,62 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import imgItem from "./assets/1.jpg";
 import { useParams } from "react-router-dom";
+import { firebaseApp } from "./AppContext";
 
 const ItemDetails = () => {
   const { itemId } = useParams();
   const [currentItem, setCurrentItem] = useState(null);
+  const [currentUser, setCurrentUser] = useState(null);
+  const [imgUrl, setImgUrl] = useState(null);
   useEffect(() => {
     console.log(itemId);
     fetch(`/items/${itemId}`)
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
-        setCurrentItem(data);
+        console.log(data.data);
+        setCurrentItem(data.data);
       });
   }, [itemId]);
-  // const currentItem = {
-  //   _id: "01",
-  //   host_id: "1",
-  //   name: "Scrabble",
-  //   category: "Games",
-  //   location: "Montreal, Old Port",
-  //   description:
-  //     "Put letters together, build words, add up your points and win! This classic game features the classic Scrabble equipment for a big-time word-on-word showdown. Do you see a word your opponent hasn't seen? A double or triple letter or word space that will let you earn big points? Could the luck of the draw win you the game? Use your letters to score points and challenge your family and friends. It’s your word against theirs!",
-  //   imageUrl: imgItem,
-  // };
+
+  useEffect(() => {
+    if (currentItem)
+      fetch(`/users/${currentItem.user}`)
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(data.data);
+          setCurrentUser(data.data);
+        });
+  }, [currentItem]);
+
+  currentItem &&
+    firebaseApp
+      .storage()
+      .ref(currentItem.images[0].fileName)
+      .getDownloadURL()
+      .then((result) => setImgUrl(result));
+
   return (
     currentItem && (
       <Wrapper>
         <WrapperItem>
-          <ImgWrapper>
-            <ItemImg src={currentItem.imageUrl} />
-          </ImgWrapper>
+          <ImgWrapper>{imgUrl && <ItemImg src={imgUrl} />}</ImgWrapper>
           <div className="name">{currentItem.name}</div>
           <div className="location"> {currentItem.location}</div>
           <div className="description">{currentItem.description}</div>
           <div className="category">{currentItem.category}</div>
         </WrapperItem>
-        <WrapperUser>
-          <img src="" />
-          <div>slogan</div>
-          <div>registered since </div>
-          <div>changed num of items</div>
-        </WrapperUser>
+        {currentUser && (
+          <WrapperUserInfo>
+            <div className>
+              <StyledAvatar src={currentUser.photoURL} />
+            </div>
+            <div>
+              <div>{currentUser.displayName}</div>
+              <div className="date"> Member since {currentUser.registered}</div>
+              <div> Has made {currentUser.numOfSwaps} swaps</div>
+            </div>
+          </WrapperUserInfo>
+        )}
       </Wrapper>
     )
   );
@@ -51,6 +66,7 @@ const ItemDetails = () => {
 const Wrapper = styled.div`
   display: flex;
   justify-content: center;
+  justify-content: space-around;
 `;
 
 const WrapperItem = styled.div`
@@ -58,7 +74,7 @@ const WrapperItem = styled.div`
   flex-direction: column;
   width: 60%;
   background-color: white;
-  border-radius: 5px;
+  border-radius: 20px;
   padding: 20px;
   .name {
     font-size: 20pt;
@@ -74,9 +90,24 @@ const WrapperItem = styled.div`
     margin-top: 20px;
   }
 `;
-const WrapperUser = styled.div`
+const WrapperUserInfo = styled.div`
   display: flex;
   flex-direction: column;
+  width: 20%;
+
+  border-radius: 20px;
+  height: 200px;
+  background-color: white;
+  font-size: 14pt;
+  align-items: center;
+  .date {
+    opacity: 60%;
+    font-size: 12pt;
+  }
+  padding: 10px;
+  div {
+    margin: 5px;
+  }
 `;
 
 const ItemImg = styled.img`
@@ -87,6 +118,11 @@ const ItemImg = styled.img`
 const ImgWrapper = styled.div`
   margin: auto;
   margin-top: 20px;
+`;
+const StyledAvatar = styled.img`
+  border-radius: 50%;
+  height: 100px;
+  width: 100px;
 `;
 
 export default ItemDetails;

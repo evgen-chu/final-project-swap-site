@@ -1,11 +1,11 @@
 const { sendResponse } = require("./utils");
 const users = require("./users.json");
 const items = require("./items.json");
-// const admin = require("firebase-admin");
 const firebase = require("firebase-admin");
 require("firebase/storage");
 require("firebase/firestore");
 global.XMLHttpRequest = require("xhr2");
+const uuidv4 = require("uuid/v4");
 
 require("dotenv").config();
 
@@ -13,18 +13,7 @@ var serviceAccount = require("C:\\Users\\eugen\\Documents\\concordia-bootcamps\\
 
 firebase.initializeApp({
   credential: firebase.credential.cert(serviceAccount),
-  // credential: admin.credential.cert({
-  // type: "service_account",
-  // project_id: process.env.FIREBASE_PROJECT_ID,
-  // private_key_id: process.env.FIREBASE_PRIVATE_KEY_ID,
-  // private_key: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, "\n"),
-  // client_email: process.env.FIREBASE_CLIENT_EMAIL,
-  // client_id: process.env.FIREBASE_CLIENT_ID,
-  // auth_uri: "https://accounts.google.com/o/oauth2/auth",
-  // token_uri: "https://oauth2.googleapis.com/token",
-  // auth_provider_x509_cert_url: "https://www.googleapis.com/oauth2/v1/certs",
-  // client_x509_cert_url: process.env.FIREBASE_CLIENT_CERT,
-  // }),
+
   projectId: process.env.FIREBASE_PROJECT_ID,
   databaseURL: process.env.FB_DATABASE_URL,
   storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
@@ -32,34 +21,12 @@ firebase.initializeApp({
 const storage = firebase.storage();
 const db = firebase.firestore();
 const bucketName = process.env.FIREBASE_STORAGE_BUCKET;
-// var serviceAccount = require("C:\\Users\\eugen\\Documents\\concordia-bootcamps\\final-project\\fp-swap-site\\server\\swap-app-key.json");
-
-// admin.initializeApp({
-//   credential: admin.credential.cert(serviceAccount),
-// });
-
-// GET user by id
-// const getUserById = async (req, res) => {
-//   const db = admin.firestore();
-//   const docRef = db.collection("users").doc("alovelace");
-//   console.log("ahahhaahah");
-//   await docRef.set({
-//     first: "Ada",
-//     last: "Lovelace",
-//     born: 1815,
-//   });
-//   //const userId = params.userId;
-//   // const user = users.find((user) => user._id === userId);
-//   //return sendResponse(res, 200, user);
-// };
 
 //GET item by id
 const getItemById = async (req, res) => {
-  const itemId = req.params.itemId;
-  console.log(itemId);
-  //const item = items.find((item) => item._id === itemId);
+  const id = req.params.itemId;
   const db = firebase.firestore();
-  const docRef = db.collection("items").doc(itemId);
+  const docRef = db.collection("items").doc(id);
   const doc = await docRef.get();
   if (!doc.exists) {
     console.log("No such document!");
@@ -68,6 +35,46 @@ const getItemById = async (req, res) => {
   }
 
   return sendResponse(res, 200, doc.data());
+};
+
+//GET user by id
+
+const getUserById = async (req, res) => {
+  const id = req.params.userId;
+  const db = firebase.firestore();
+  const docRef = db.collection("users").doc(id);
+  const doc = await docRef.get();
+  if (!doc.exists) {
+    console.log("No such document!");
+  } else {
+    console.log("Document data:", doc.data());
+  }
+
+  return sendResponse(res, 200, doc.data());
+};
+//GET all items of the user with specified id
+const getItemsByUserId = async (req, res) => {
+  const id = req.params.userId;
+  const db = firebase.firestore();
+  const docRef = db.collection("items");
+  //const doc = await
+
+  docRef
+    .where("user", "==", id)
+    .get()
+    .then((querySnapshot) => {
+      const temp = [];
+      querySnapshot.forEach((doc) => {
+        // doc.data() is never undefined for query doc snapshots
+        console.log(doc.id, " => ", doc.data());
+        temp.push({ ...doc.data(), id: doc.id });
+      });
+      sendResponse(res, 200, temp);
+    })
+    .catch((error) => {
+      console.log("Error getting documents: ", error);
+    });
+  //return sendResponse(res, 200, temp);
 };
 
 //POST add item
@@ -103,40 +110,14 @@ const addItem = async (req, res) => {
     console.log(err);
   });
 
-  blobWriter.on("finish", () => {
+  blobWriter.on("finish", (result) => {
+    console.log("result");
+    console.log(result);
     console.log("file name: " + blob.name);
     return sendResponse(res, 200, req.file.name);
   });
 
   blobWriter.end(req.file.buffer);
-
-  // const storageRef = storage.ref();
-  // const fileRef = storageRef.child("test2.jpg");
-  // const collectionRef = db.collection("images");
-
-  // fileRef.put(req.file.buffer).then(async (upd) => {
-  //   const url = await fileRef.getDownloadURL();
-  //   const createdAt = Date.now();
-  //   collectionRef.add({ url: url, created: createdAt });
-  // });
-  // .on(
-  //   "state_changed",
-  //   // (snap) => {
-  //   //   let percentage = (snap.bytesTransferred / snap.totalBytes) * 100;
-  //   //   setProgress(percentage);
-  //   // },
-  //   (err) => {
-  //     // setError(err);
-  //     // console.log(err);
-  //   },
-  //   async () => {
-  //     console.log("done!");
-  //     const url = await fileRef.getDownloadURL();
-  //     const createdAt = timestamp();
-  //     collectionRef.add({ url: url, created: createdAt });
-  //     setUrl(url);
-  //   }
-  // );
 };
 
 //GET all items
@@ -163,25 +144,18 @@ const getAllItems = async (req, res) => {
 
 const queryDatabase = async (col, key) => {
   const ref = db.collection(col);
-  const data = await ref.doc(key).get();
-  if (!data.exists) {
-    return null;
-  } else {
-    return data.data();
-  }
-  // let data;
-  // await ref.once(
-  //   "value",
-  //   (snapshot) => {
-  //     data = snapshot.val();
-  //   },
-  //   (err) => {
-  //     console.log(err);
-  //   }
-  // );
+  const snapshot = await ref.where("email", "==", key).get();
 
-  // return data;
+  if (snapshot.empty) return null;
+  else {
+    const temp = [];
+    snapshot.forEach((doc) => {
+      temp.push(doc);
+    });
+    return temp[0].data();
+  }
 };
+
 // this function will return either the user object or false.
 const getUser = async (email) => {
   const data = await queryDatabase(`users`, email);
@@ -194,7 +168,9 @@ const getUser = async (email) => {
 };
 
 const createUser = async (req, res) => {
+  console.log(req.body.email);
   const returningUser = await getUser(req.body.email);
+
   if (returningUser != null) {
     console.log("Returning user");
     console.log(returningUser);
@@ -204,20 +180,14 @@ const createUser = async (req, res) => {
     return;
   } else {
     const appUsersRef = db.collection("users");
-    await appUsersRef.doc(req.body.email).set(req.body);
+    //await appUsersRef.doc(uuidv4()).set(req.body);
+    await appUsersRef.doc("1").set(req.body);
     res.status(200).json({
       status: 200,
       data: req.body,
       message: "new user",
     });
     return;
-    // appUsersRef.set(req).then(() => {
-    //   res.status(200).json({
-    //     status: 200,
-    //     data: req.body,
-    //     message: "new user",
-    //   });
-    // });
   }
 };
 
@@ -226,4 +196,6 @@ module.exports = {
   getItemById,
   getAllItems,
   addItem,
+  getUserById,
+  getItemsByUserId,
 };

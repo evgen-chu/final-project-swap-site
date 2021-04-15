@@ -45,8 +45,8 @@ const UploadForm = () => {
       <input type="text" placeholder="name" />
       <textarea placeholder="description" />
       <select placeholder="category">
-        {categories.map((item) => (
-          <option>{item}</option>
+        {categories.map((item, index) => (
+          <option key={item + "-" + index}>{item}</option>
         ))}
       </select>
       <div>
@@ -72,8 +72,8 @@ const UploadForm = () => {
       </div>
       {tags.length > 0 && (
         <div>
-          {tags.map((item) => (
-            <button>{item}</button>
+          {tags.map((item, index) => (
+            <button key={item + "-" + index}>{item}</button>
           ))}
         </div>
       )}

@@ -15,8 +15,8 @@ const categories = [
 const CategoriesGrid = () => {
   return (
     <Wrapper>
-      {categories.map((item) => {
-        return <Button>{item}</Button>;
+      {categories.map((item, index) => {
+        return <Button key={item + "button" + index}>{item}</Button>;
       })}
     </Wrapper>
   );

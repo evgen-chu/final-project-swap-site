@@ -2,9 +2,7 @@ import React, { createContext, useEffect, useState } from "react";
 import withFirebaseAuth from "react-with-firebase-auth";
 import firebase from "firebase";
 import "firebase/auth";
-//import { firebaseAppAuth } from "../server/firebase/config";
 
-console.log(process.env.REACT_APP_APIKEY);
 var firebaseConfig = {
   apiKey: process.env.REACT_APP_APIKEY,
   authDomain: process.env.REACT_APP_AUTH_DOMAIN,
@@ -13,7 +11,7 @@ var firebaseConfig = {
   messagingSenderId: process.env.REACT_APP_MESSAGING_SENDERID,
   appId: process.env.REACT_APP_APPID,
 };
-const firebaseApp =
+export const firebaseApp =
   !firebase.apps.length && firebase.initializeApp(firebaseConfig);
 
 const firebaseAppAuth = firebaseApp.auth();

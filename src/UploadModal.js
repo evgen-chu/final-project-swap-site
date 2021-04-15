@@ -76,8 +76,8 @@ const UploadModal = ({ isOpen, setOpen }) => {
             setForm({ ...form, category: e.target.value });
           }}
         >
-          {categories.map((item) => (
-            <option>{item}</option>
+          {categories.map((item, index) => (
+            <option key={item + "-" + index}>{item}</option>
           ))}
         </select>
         {/*<div>

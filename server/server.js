@@ -4,7 +4,14 @@ const express = require("express");
 const morgan = require("morgan");
 const multer = require("multer");
 
-const { createUser, getItemById, getAllItems, addItem } = require("./handlers");
+const {
+  createUser,
+  getItemById,
+  getAllItems,
+  addItem,
+  getUserById,
+  getItemsByUserId,
+} = require("./handlers");
 
 require("dotenv").config();
 
@@ -33,7 +40,9 @@ app.use(express.json());
 app.post("/users", createUser);
 //app.get("/users/:userId", getUserById);
 app.get("/getitems", getAllItems);
+app.get("/users/:userId/items", getItemsByUserId);
 app.get("/items/:itemId", getItemById);
+app.get("/users/:userId", getUserById);
 
 const upload = multer({ storage: multer.memoryStorage() });
 app.post("/items/addItem", upload.single("file"), addItem);
