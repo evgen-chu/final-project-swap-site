@@ -19,13 +19,13 @@ const UploadModal = ({ isOpen, setOpen }) => {
 
   const types = ["image/png", "image/jpeg"];
   const categories = [
+    "Plants",
     "Books",
     "Board Games",
     "Sports",
     "Toys",
     "Music",
     "Computers",
-    "Plants",
   ];
   const { url } = useStorage(file, submit, form);
   const changeHandler = (e) => {
@@ -50,7 +50,7 @@ const UploadModal = ({ isOpen, setOpen }) => {
   };
 
   return (
-    <ReactModal isOpen={isOpen}>
+    <Modal isOpen={isOpen}>
       <Form>
         <input className="file" type="file" onChange={changeHandler} />
         <div className="output">
@@ -80,34 +80,7 @@ const UploadModal = ({ isOpen, setOpen }) => {
             <option key={item + "-" + index}>{item}</option>
           ))}
         </select>
-        {/*<div>
-          <input
-            type="text"
-            placeholder="Add tag"
-            onChange={(e) => {
-              setTag(e.target.value);
-              console.log(tag);
-            }}
-          />
-          <button
-            onClick={(e) => {
-              const temp = [...tags, tag];
-              setTags(temp);
-              console.log(tag);
-              console.log(tags);
-              setTag(null);
-            }}
-          >
-            Add
-          </button>
-        </div>
-        {tags.length > 0 && (
-          <div>
-            {tags.map((item) => (
-              <button>{item}</button>
-            ))}
-          </div>
-        )} */}
+
         <input
           type="text"
           placeholder="Location"
@@ -115,44 +88,69 @@ const UploadModal = ({ isOpen, setOpen }) => {
             setForm({ ...form, location: e.target.value });
           }}
         />
-        <button
-          onClick={(ev) => {
-            handleSubmit(ev);
-          }}
-        >
-          Add item
-        </button>
-        <button
-          onClick={() => {
-            setOpen(false);
-          }}
-        >
-          Cancel
-        </button>
+        <ButtonWrapper>
+          <button
+            onClick={(ev) => {
+              handleSubmit(ev);
+            }}
+          >
+            Add item
+          </button>
+          <button
+            onClick={() => {
+              setOpen(false);
+            }}
+          >
+            Cancel
+          </button>
+        </ButtonWrapper>
       </Form>
-    </ReactModal>
+    </Modal>
   );
 };
 
+const Modal = styled(ReactModal)`
+  background-color: #f0f8ff;
+  position: absolute;
+  width: 50%;
+  height: 20%;
+  outline: none;
+  background: #fff;
+  margin: auto;
+  top: 30%;
+  left: 30%;
+  border-radius: 20px;
+`;
 const Form = styled.form`
+  background-color: #f0f8ff;
+  height: 100%;
+  width: 100%;
+  border-radius: 20px;
   display: flex;
   flex-direction: column;
+  align-items: center;
   input {
-    width: 20%;
+    width: 50%;
     height: 20px;
     margin: 10px;
   }
   textarea {
-    width: 20%;
+    width: 50%;
     margin: 10px;
   }
   select {
-    width: 20%;
+    width: 50%;
     margin: 10px;
   }
   button {
     width: 20%;
+    border-radius: 5px;
   }
+`;
+const ButtonWrapper = styled.div`
+  width: 40%;
+  display: flex;
+  justify-content: space-around;
 `;
 
 export default UploadModal;

@@ -9,7 +9,7 @@ const useStorage = (file, submit, form) => {
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState(null);
   const [url, setUrl] = useState(null);
-  const [id, setId] = useState(1);
+  const [id, setId] = useState(11);
 
   useEffect(() => {
     // const storageRef = projectStorage.ref(file.name);
@@ -42,7 +42,7 @@ const useStorage = (file, submit, form) => {
       formData.append("productDescription", form.description);
       formData.append("productLocation", form.location);
       formData.append("productCategory", form.category);
-      fetch("./items/addItem", {
+      fetch("/items/addItem", {
         method: "POST",
         // headers: { "Content-Type": "multipart/form-data" },
         body: formData,
