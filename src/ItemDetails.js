@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import imgItem from "./assets/1.jpg";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { firebaseApp } from "./AppContext";
 
 const ItemDetails = () => {
@@ -48,9 +48,9 @@ const ItemDetails = () => {
         </WrapperItem>
         {currentUser && (
           <WrapperUserInfo>
-            <div className>
+            <Link to={`/profile/${currentUser.id}`}>
               <StyledAvatar src={currentUser.photoURL} />
-            </div>
+            </Link>
             <div>
               <div>{currentUser.displayName}</div>
               <div className="date"> Member since {currentUser.registered}</div>

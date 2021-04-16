@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
+import { useHistory } from "react-router-dom";
 
 const ImageGrid = ({ items }) => {
+  const history = useHistory();
   items && console.log(items);
   const [updatedItems, setUpdatedItems] = useState(null);
   useEffect(() => {
@@ -14,10 +16,15 @@ const ImageGrid = ({ items }) => {
         updatedItems.map((item) => {
           console.log(item);
           return (
-            <ItemWrapper key={item.id}>
+            <ItemWrapper
+              key={item.id}
+              onClick={() => {
+                history.push(`/items/${item.id}`);
+              }}
+            >
               <Img src={item.url} alt="uploaded pic" />
               <div className="name">{item.name}</div>
-              <div className="category">{item.category}</div>
+              {/* <div className="category">{item.category}</div> */}
             </ItemWrapper>
           );
         })}

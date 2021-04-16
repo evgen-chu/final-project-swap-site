@@ -50,7 +50,7 @@ const getUserById = async (req, res) => {
     console.log("Document data:", doc.data());
   }
 
-  return sendResponse(res, 200, doc.data());
+  return sendResponse(res, 200, { ...doc.data(), id: doc.id });
 };
 //GET all items of the user with specified id
 const getItemsByUserId = async (req, res) => {
@@ -79,6 +79,7 @@ const getItemsByUserId = async (req, res) => {
 
 //POST add item
 const addItem = async (req, res) => {
+  console.log("here");
   const blob = storage
     .bucket(bucketName)
     .file("images/" + req.body.productId + "/" + req.file.originalname);
@@ -123,19 +124,33 @@ const addItem = async (req, res) => {
 //GET all items
 
 const getAllItems = async (req, res) => {
+  const category = req.query.category;
   console.log("here");
-  const db = admin.firestore();
+  const db = firebase.firestore();
   const docsRef = db.collection("items");
-  const snapshot = await docsRef.get();
-  snapshot.forEach((doc) => {
-    console.log(doc.id, "=>", doc.data());
-  });
-  const docs = await docsRef.get();
-  if (!docs.exists) {
-    console.log("No such document!");
-  } else {
-    console.log("Document data:", docs.data());
+
+  const snapshot = await docsRef.where("category", "==", category).get();
+
+  if (snapshot.empty)
+    return sendResponse(res, 404, category, "no such category");
+  else {
+    const temp = [];
+    snapshot.forEach((doc) => {
+      console.log(doc.id);
+      temp.push({ ...doc.data(), id: doc.id });
+    });
+    return sendResponse(res, 200, temp);
   }
+  // const snapshot = await docsRef.get();
+  // snapshot.forEach((doc) => {
+  //   console.log(doc.id, "=>", doc.data());
+  // });
+  // const docs = await docsRef.get();
+  // if (!docs.exists) {
+  //   console.log("No such document!");
+  // } else {
+  //   console.log("Document data:", docs.data());
+  // }
 
   return sendResponse(res, 200, docs.data());
 };

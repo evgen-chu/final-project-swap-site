@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import ImageGrid from "./ImageGrid";
 import UploadForm from "./UploadForm";
 import UploadModal from "./UploadModal";
 import { useParams } from "react-router-dom";
+import { IoFlowerOutline } from "react-icons/io5";
 
 import { firebaseApp } from "./AppContext";
 
@@ -12,6 +13,7 @@ const Profile = () => {
   const [open, setOpen] = useState(false);
   const [userItems, setUserItems] = useState([]);
   const [currentUser, setCurrentUser] = useState();
+  const [status, setStatus] = useState("loading");
 
   const [imgUrls, setImgUrls] = useState([]);
 
@@ -72,6 +74,7 @@ const Profile = () => {
     let tempUrls = await setItems();
     console.log(tempUrls);
     setImgUrls(tempUrls);
+    setStatus("idle");
   }, [userItems]);
   console.log(imgUrls);
   return (
@@ -97,7 +100,7 @@ const Profile = () => {
       </button>
       <UploadModal isOpen={open} setOpen={setOpen} />
       <GridWrapper>
-        <ImageGrid items={imgUrls} />
+        {status === "loading" ? <Loader /> : <ImageGrid items={imgUrls} />}
         {/* {imgUrls.length === userItems.length ? (
           <ImageGrid items={imgUrls} />
         ) : (
@@ -146,8 +149,24 @@ const WrapperUserInfo = styled.div`
 `;
 
 const GridWrapper = styled.div`
+  margin-top: 20px;
   width: 100%;
   background-color: white;
+`;
+
+const rotation = keyframes`
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(359deg);
+  }
+`;
+const Loader = styled(IoFlowerOutline)`
+  animation: ${rotation} 2s infinite linear;
+  .rotate {
+    animation: ${rotation} 2s infinite linear;
+  }
 `;
 
 export default Profile;
