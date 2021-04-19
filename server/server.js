@@ -17,6 +17,7 @@ const {
   updateUser,
   updateItem,
   updateInfo,
+  searchItem,
 } = require("./handlers");
 
 require("dotenv").config();
@@ -55,6 +56,8 @@ app.put("/users/:userId/update", updateUser);
 //endpoint for checking new offers
 app.get("/offers/:userId", getOffersByUserId);
 app.put("/offers/:offerId/update", updateOffer);
+
+app.get("/searchItem/:searchItem", searchItem);
 
 const upload = multer({ storage: multer.memoryStorage() });
 //endpoint for creating new offer

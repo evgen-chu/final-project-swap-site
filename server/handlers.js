@@ -1,4 +1,4 @@
-const { sendResponse } = require("./utils");
+const { sendResponse, searchForItem, paginatedResults } = require("./utils");
 
 const firebase = require("firebase-admin");
 require("firebase/storage");
@@ -162,7 +162,7 @@ const getAllItems = async (req, res) => {
       snapshot.forEach((doc) => {
         temp.push({ ...doc.data(), id: doc.id });
       });
-      return sendResponse(res, 200, temp);
+      return sendResponse(res, 200, paginatedResults(req, temp));
     }
   }
 
@@ -275,18 +275,25 @@ const getOffersByUserId = async (req, res) => {
     .where("user_offeree_id", "==", id)
     .where("status", "==", "pending")
     .get();
-  if (snapshot.empty) return sendResponse(res, 404, req, "there is no offers");
-  else {
-    const temp = [];
-    snapshot.forEach((doc) => {
-      temp.push(doc.data());
-    });
-    // get data about bidder(user, item) and offeree(item) for each offer doc
-    console.log(temp);
-    const result = await getOfferInfo(temp);
-    console.log("Result:");
-    console.log(result);
-    return sendResponse(res, 200, result);
+
+  try {
+    if (snapshot.empty) {
+      return sendResponse(res, 404, [], "there is no offers");
+    } else {
+      const temp = [];
+      snapshot.forEach((doc) => {
+        temp.push(doc.data());
+      });
+      // get data about bidder(user, item) and offeree(item) for each offer doc
+      console.log("Temp here:", temp);
+      const result = await getOfferInfo(temp);
+      console.log("Result:");
+      console.log(result);
+      return sendResponse(res, 200, result);
+    }
+  } catch (err) {
+    console.log(err.message);
+    return sendResponse(res, 404, req, "DB error");
   }
 };
 
@@ -348,6 +355,7 @@ const updateInfo = async (req, res) => {
   const statusOffer = req.body.status;
   const batch = db.batch();
   if (statusOffer === "accepted") {
+    console.log("Start of update");
     const offerRef = db.collection("offers").doc(offerId);
     batch.update(offerRef, { status: statusOffer });
 
@@ -364,9 +372,11 @@ const updateInfo = async (req, res) => {
 
     const userOffereeRef = db.collection("users").doc(offereeUser);
     batch.update(userOffereeRef, { numOfSwaps: Number(numOfSwaps_userOff) });
+    console.log("End of update");
   }
 
   if (statusOffer === "rejected") {
+    console.log("Reject!");
     const offerRef = db.collection("offers").doc(offerId);
     batch.update(offerRef, { status: statusOffer });
   }
@@ -374,6 +384,31 @@ const updateInfo = async (req, res) => {
   await batch.commit();
   return sendResponse(res, 200, req.body);
 };
+
+//GET all items that includes in there name searchItem
+const searchItem = (req, res) => {
+  console.log("I'm in search");
+  let searchResult = [];
+  let searchItem = req.params.searchItem;
+  const docRef = db.collection("items");
+
+  docRef
+    .select("_id")
+    .select("name")
+    .get()
+    .then((querySnapshot) => {
+      const temp = [];
+      querySnapshot.forEach((doc) => {
+        temp.push({ ...doc.data(), id: doc.id });
+      });
+      searchResult = searchForItem(temp, searchItem);
+      sendResponse(res, 200, searchResult);
+    })
+    .catch((error) => {
+      console.log("Error getting documents: ", error);
+    });
+};
+
 module.exports = {
   createUser,
   getItemById,
@@ -387,4 +422,5 @@ module.exports = {
   updateOffer,
   updateItem,
   updateInfo,
+  searchItem,
 };

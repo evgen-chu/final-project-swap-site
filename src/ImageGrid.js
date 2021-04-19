@@ -14,7 +14,6 @@ const ImageGrid = ({ items }) => {
       {updatedItems &&
         // items.length > 0 &&
         updatedItems.map((item) => {
-          console.log(item);
           return (
             <ItemWrapper
               key={item.id}

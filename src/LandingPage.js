@@ -1,23 +1,23 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import CategoriesGrid from "./CategoriesGrid";
-import banner from "./assets/banner.jpg";
-import plantBanner from "./assets/plant_banner.jpg";
 import plantExchange from "./assets/plant-exchange.jpg";
 import { firebaseApp } from "./AppContext";
 import ImageGrid from "./ImageGrid";
+import Search from "./Search";
+import PageSelect from "./PageSelect";
 
 const LandingPage = () => {
   const [items, setItems] = useState([]);
   const [imgUrls, setImgUrls] = useState([]);
+  const [page, setPage] = React.useState(1);
   useEffect(() => {
-    fetch(`/getitems?category=Plants`)
+    fetch(`/getitems?category=Plants&page=${page}&limit=9`)
       .then((res) => res.json())
       .then((data) => {
         console.log(data.data);
         setItems(data.data);
       });
-  }, []);
+  }, [page]);
 
   ///===========================
   const setItems1 = async () => {
@@ -47,7 +47,6 @@ const LandingPage = () => {
     return [];
   };
   useEffect(async () => {
-    console.log("useEffect 3");
     let tempUrls = await setItems1();
     console.log(tempUrls);
     setImgUrls(tempUrls);
@@ -57,14 +56,11 @@ const LandingPage = () => {
       <Banner>
         <Img src={plantExchange} />
       </Banner>
-      <Search>
-        <Input type="text" placeholder="What plant are you looking for?" />
-        <button>Search</button>
-      </Search>
+      <SearchBar />
 
       <Divider />
       <ImageGrid items={imgUrls} />
-      <button>MORE CATEGORIES</button>
+      <PageSelect page={page} setPage={setPage} />
     </Wrapper>
   );
 };
@@ -92,11 +88,10 @@ const Divider = styled.div`
   height: 1px;
   background-color: black;
 `;
-const Search = styled.div`
-  display: flex;
+const SearchBar = styled(Search)`
   position: absolute;
   left: 35%;
-  top: 7%;
+  top: 50%;
   button {
     border-radius: 5px;
     margin-left: 10px;
@@ -108,4 +103,5 @@ const Input = styled.input`
   height: 40px;
   border-radius: 5px;
 `;
+
 export default LandingPage;

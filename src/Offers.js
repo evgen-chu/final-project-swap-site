@@ -1,24 +1,30 @@
 import React, { useEffect, useContext, useState } from "react";
 import styled from "styled-components";
-import { firebaseApp } from "./AppContext";
-import { useGetUrls } from "./hooks/useGetUrls.hook.js";
 import { AppContext } from "./AppContext";
+import tipSent from "./assets/tip-sent.svg";
+import tipRecieved from "./assets/tip-received.svg";
+import { useHistory } from "react-router-dom";
 
 const Offers = () => {
-  const { appUser, newOffers } = useContext(AppContext);
+  const history = useHistory();
+  const {
+    appUser,
+    newOffers,
+    setNewOffers,
+    offerStatusChanged,
+    setOfferStatusChanged,
+  } = useContext(AppContext);
   const [bidderUser, setBidderUser] = useState(null);
-  const [offersInfo, setOffersInfo] = useState([]);
-  const [offerAccepted, setOfferAccepted] = useState(false);
-  const [offerStatusChanged, setOfferStatusChanged] = useState(false);
-
-  useEffect(() => {
-    fetch(`/offers/${appUser.id}`)
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data.data);
-        setOffersInfo(data.data);
-      });
-  }, []);
+  // const [offersInfo, setOffersInfo] = useState([]);
+  console.log("New offers:", newOffers);
+  // useEffect(() => {
+  //   fetch(`/offers/${appUser.id}`)
+  //     .then((res) => res.json())
+  //     .then((data) => {
+  //       console.log(data.data);
+  //       setNewOffers(data.data);
+  //     });
+  // }, [offerStatusChanged]);
 
   const handleAcceptSwap = (offer) => {
     //to change status of offer to "accepted"
@@ -40,9 +46,12 @@ const Offers = () => {
       method: "PUT",
       // headers: { "Content-Type": "multipart/form-data" },
       body: formData,
-    }).then((data) => {
-      setOfferStatusChanged(!offerStatusChanged);
-    });
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        setOfferStatusChanged(!offerStatusChanged);
+      });
   };
   const handleRejectSwap = (offer) => {
     //change status of offer to rejected
@@ -60,63 +69,76 @@ const Offers = () => {
 
   return (
     <Wrapper>
-      {offersInfo &&
-        offersInfo.map((offer) => {
-          return (
-            <OfferWrapper>
-              <BidderWrapper>
-                <WrapperUserInfo>
-                  <div>
-                    <StyledAvatar src={offer.userBidder.photoURL} />
-                  </div>
-                  <div>
+      {newOffers.length !== 0
+        ? newOffers.map((offer) => {
+            console.log("MESSAGE:", offer.userBidder.message);
+            return (
+              <OfferWrapper>
+                <BidderWrapper>
+                  <WrapperUserInfo>
+                    <MessageWrapper>
+                      <div>
+                        <StyledAvatar src={offer.userBidder.photoURL} />
+                      </div>
+                      <Message className="message">{offer.message}</Message>
+                    </MessageWrapper>
+
+                    {/* <div>
                     <div>{offer.userBidder.displayName}</div>
                     <div className="date">
                       Member since {offer.userBidder.registered}
                     </div>
                     <div> Has made {offer.userBidder.numOfSwaps} swaps</div>
-                  </div>
-                </WrapperUserInfo>
+                  </div> */}
+                  </WrapperUserInfo>
 
-                <ImgWrapper>
-                  <ItemImg src={offer.itemBidder.mediaLink} />
-                </ImgWrapper>
-                <div className="name">{offer.itemBidder.name}</div>
-                <div className="location"> {offer.itemBidder.location}</div>
-                <div className="description">
-                  {offer.itemBidder.description}
-                </div>
-                <div className="category">{offer.itemBidder.category}</div>
-              </BidderWrapper>
-              <ButtonWrapper>
-                <button
-                  className="btn-accept"
-                  onClick={() => handleAcceptSwap(offer)}
-                >
-                  Accept
-                </button>
-                <button
-                  className="btn-reject"
-                  onClick={() => handleRejectSwap(offer)}
-                >
-                  Reject
-                </button>
-              </ButtonWrapper>
+                  <ItemWrapper>
+                    <ItemImg src={offer.itemBidder.mediaLink} />
+                    <DescriptionWrapper>
+                      <div className="name">{offer.itemBidder.name}</div>
+                      <div className="location">
+                        {" "}
+                        {offer.itemBidder.location}
+                      </div>
+                      <div className="description">
+                        {offer.itemBidder.description}
+                      </div>
+                      <div className="category">
+                        {offer.itemBidder.category}
+                      </div>
+                    </DescriptionWrapper>
+                  </ItemWrapper>
+                </BidderWrapper>
+                <ButtonWrapper>
+                  <button
+                    className="btn-accept"
+                    onClick={() => handleAcceptSwap(offer)}
+                  >
+                    Accept
+                  </button>
+                  <button
+                    className="btn-reject"
+                    onClick={() => handleRejectSwap(offer)}
+                  >
+                    Reject
+                  </button>
+                </ButtonWrapper>
 
-              <AppUserWrapper>
-                <ImgWrapper>
-                  <ItemImg src={offer.itemOfferee.mediaLink} />
-                </ImgWrapper>
-                <div className="name">{offer.itemOfferee.name}</div>
-                <div className="location"> {offer.itemOfferee.location}</div>
-                {/* <div className="description">
+                <AppUserWrapper>
+                  <ImgWrapper>
+                    <ItemImg src={offer.itemOfferee.mediaLink} />
+                  </ImgWrapper>
+                  <div className="name">{offer.itemOfferee.name}</div>
+                  <div className="location"> {offer.itemOfferee.location}</div>
+                  {/* <div className="description">
                   {offer.itemOfferee.description}
                 </div> */}
-                <div className="category">{offer.itemOfferee.category}</div>
-              </AppUserWrapper>
-            </OfferWrapper>
-          );
-        })}
+                  <div className="category">{offer.itemOfferee.category}</div>
+                </AppUserWrapper>
+              </OfferWrapper>
+            );
+          })
+        : history.push(`/profile/${appUser.id}`)}
     </Wrapper>
   );
 };
@@ -197,13 +219,17 @@ const WrapperUserInfo = styled.div`
   }
 `;
 const ItemImg = styled.img`
-  max-width: 200px;
-  min-height: 300px;
+  min-width: 200px;
+  max-height: 300px;
+  border-radius: 20px;
+  margin: 20px;
 `;
 
 const ImgWrapper = styled.div`
   margin: auto;
   margin-top: 20px;
+  width: 200px;
+  height: 300px;
 `;
 
 const ButtonWrapper = styled.div`
@@ -222,4 +248,35 @@ const ButtonWrapper = styled.div`
   }
 `;
 
+const MessageWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+
+  .message {
+    background-color: "#E9E9EB";
+    margin: 20px;
+    color: black;
+    font-size: 16pt;
+  }
+  .message::before {
+    content: url(${tipRecieved});
+    position: relative;
+    top: 1rem;
+    left: -0.75rem;
+  }
+`;
+const Message = styled.div`
+  background-color: #e9e9eb;
+  width: 200px;
+  height: 40px;
+  border-radius: 5px;
+`;
+const DescriptionWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const ItemWrapper = styled.div`
+  display: flex;
+`;
 export default Offers;
