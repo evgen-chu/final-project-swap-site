@@ -11,6 +11,7 @@ background-color: #DCDCDC;
 color: black;
 font-family: 'Concert One', cursive;
 border: none;
+border-radius: 5px;
 
 }
 

@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import { NavLink, Link, useHistory } from "react-router-dom";
 
@@ -8,10 +8,17 @@ import { AiOutlineInteraction } from "react-icons/ai";
 import flower from "./assets/flower.svg";
 import { GiFlowerPot } from "react-icons/gi";
 const Header = () => {
-  const { appUser, signInWithGoogle, handleSignOut, message } = useContext(
-    AppContext
-  );
+  const {
+    appUser,
+    newOffers,
+    signInWithGoogle,
+    handleSignOut,
+    message,
+  } = useContext(AppContext);
+
   const history = useHistory();
+
+  console.log(newOffers);
   return (
     <Wrapper>
       <Logo to="/home">
@@ -21,7 +28,18 @@ const Header = () => {
         {appUser && appUser.email ? (
           <>
             <StyledUserContainer>
-              <Avatar src={appUser.photoURL} />
+              {newOffers.length > 0 && (
+                <OfferNumber
+                  onClick={() => {
+                    history.push("/offers");
+                  }}
+                >
+                  {newOffers.length}
+                </OfferNumber>
+              )}
+              <AvatarWrapper to={`/profile/${appUser.id}`}>
+                <Avatar src={appUser.photoURL} />
+              </AvatarWrapper>
               {/* <p>
                 {appUser.displayName}
                ({appUser.email}) 
@@ -80,6 +98,24 @@ const Button = styled.button`
   border-radius: 5px;
   margin-left: 10px;
   margin-right: 10px;
+`;
+
+const OfferNumber = styled.button`
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  background-color: #f08080;
+  color: white;
+  font-size: 16pt;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 20px;
+  box-shadow: 2px 6px 24px -3px rgba(0, 0, 0, 0.53);
+`;
+const AvatarWrapper = styled(Link)`
+  background-color: #8fbc8f;
 `;
 
 export default Header;

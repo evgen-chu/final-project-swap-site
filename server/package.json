@@ -22,7 +22,9 @@
         "nodemon": "^2.0.2",
         "request": "^2.88.2",
         "request-promise": "^4.2.6",
-        "xhr2": "^0.2.1"
+        "xhr2": "^0.2.1",
+        "mapbox-gl": "^2.2.0",
+        "worker-loader": "^3.0.7"
     },
     "engines": {
         "node": "14.15.4"

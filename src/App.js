@@ -30,10 +30,6 @@ function App() {
             <Route exact path="/items/:itemId">
               <ItemDetails />
             </Route>
-            {/* <Route>
-              <BrowsePage exact path="/items" />
-            </Route> */}
-
             <Route exact path="/offers">
               <Offers />
             </Route>

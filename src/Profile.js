@@ -1,14 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import styled, { keyframes } from "styled-components";
 import ImageGrid from "./ImageGrid";
 import UploadForm from "./UploadForm";
 import UploadModal from "./UploadModal";
 import { useParams } from "react-router-dom";
 import { IoFlowerOutline } from "react-icons/io5";
-
+import { AppContext } from "./AppContext";
 import { firebaseApp } from "./AppContext";
 
 const Profile = () => {
+  const { appUser, newOffers } = useContext(AppContext);
   const { userId } = useParams();
   const [open, setOpen] = useState(false);
   const [userItems, setUserItems] = useState([]);
@@ -18,22 +19,17 @@ const Profile = () => {
   const [imgUrls, setImgUrls] = useState([]);
 
   useEffect(() => {
-    console.log("useEffect 1");
     fetch(`/users/${userId}`)
       .then((res) => res.json())
       .then((data) => {
         setCurrentUser(data.data);
-        //setUserItems([]);
-        //setImgUrls([]);
       });
   }, [userId]);
 
   useEffect(() => {
-    console.log("useEffect 2");
     fetch(`/users/${userId}/items`)
       .then((res) => res.json())
       .then((data) => {
-        //setImgUrls([]);
         setUserItems(data.data);
       });
   }, [currentUser]);
@@ -59,24 +55,17 @@ const Profile = () => {
             category: item.category,
           });
         });
-
-        // let temp = imgUrls;
-        // temp.push({ id: item.id, url: result });
-        // setImgUrls(temp);
-        // setImgUrls([...imgUrls, { id: item.id, url: result }]);
       });
       return tempUrls;
     }
     return [];
   };
   useEffect(async () => {
-    console.log("useEffect 3");
     let tempUrls = await setItems();
     console.log(tempUrls);
     setImgUrls(tempUrls);
     setStatus("idle");
   }, [userItems]);
-  console.log(imgUrls);
   return (
     <Wrapper>
       {currentUser && (
@@ -91,13 +80,15 @@ const Profile = () => {
           </div>
         </WrapperUserInfo>
       )}
-      <button
-        onClick={(e) => {
-          setOpen(true);
-        }}
-      >
-        Add item
-      </button>
+      {appUser.id === userId && (
+        <button
+          onClick={(e) => {
+            setOpen(true);
+          }}
+        >
+          Add item
+        </button>
+      )}
       <UploadModal isOpen={open} setOpen={setOpen} />
       <GridWrapper>
         {status === "loading" ? <Loader /> : <ImageGrid items={imgUrls} />}

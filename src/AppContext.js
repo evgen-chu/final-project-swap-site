@@ -24,6 +24,8 @@ export const AppContext = createContext(null);
 const AppProvider = ({ children, signInWithGoogle, user, signOut }) => {
   const [appUser, setAppUser] = useState({});
   const [message, setMessage] = useState("");
+  const [appUserItems, setAppUserItems] = useState(null);
+  const [newOffers, setNewOffers] = useState([]);
 
   const handleSignOut = () => {
     signOut();
@@ -46,14 +48,43 @@ const AppProvider = ({ children, signInWithGoogle, user, signOut }) => {
       })
         .then((res) => res.json())
         .then((json) => {
+          console.log(json);
           setAppUser(json.data);
           setMessage(json.message);
         });
     }
   }, [user]);
+
+  useEffect(() => {
+    console.log("appUser", appUser);
+
+    fetch(`/users/${appUser.id}/items`)
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data.data);
+        setAppUserItems(data.data);
+      });
+  }, [appUser]);
+
+  useEffect(() => {
+    if (appUser)
+      fetch(`/offers/${appUser.id}`)
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(data.data);
+          setNewOffers(data.data);
+        });
+  }, [appUser]);
   return (
     <AppContext.Provider
-      value={{ appUser, signInWithGoogle, handleSignOut, message }}
+      value={{
+        appUser,
+        appUserItems,
+        newOffers,
+        signInWithGoogle,
+        handleSignOut,
+        message,
+      }}
     >
       {children}
     </AppContext.Provider>
