@@ -1,12 +1,14 @@
 import React, { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
-import { NavLink, Link, useHistory } from "react-router-dom";
+import { NavLink, Link, useHistory, useLocation } from "react-router-dom";
 
 import { AppContext } from "./AppContext";
 import Avatar from "./Avatar";
 import { AiOutlineInteraction } from "react-icons/ai";
 import flower from "./assets/flower.svg";
 import { GiFlowerPot } from "react-icons/gi";
+import Search from "./Search";
+
 const Header = () => {
   const {
     appUser,
@@ -17,13 +19,18 @@ const Header = () => {
   } = useContext(AppContext);
 
   const history = useHistory();
+  const location = useLocation();
 
-  console.log(newOffers);
+  const path = window.location.pathname;
+
+  console.log(location);
+  // console.log(newOffers);
   return (
     <Wrapper>
       <Logo to="/home">
         PlantSWAP <FlowerIcon />{" "}
       </Logo>
+      {location.pathname !== "/home" && <Search />}
       <StyledHeader>
         {appUser && appUser.email ? (
           <>

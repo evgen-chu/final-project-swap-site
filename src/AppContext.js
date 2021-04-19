@@ -26,6 +26,7 @@ const AppProvider = ({ children, signInWithGoogle, user, signOut }) => {
   const [message, setMessage] = useState("");
   const [appUserItems, setAppUserItems] = useState(null);
   const [newOffers, setNewOffers] = useState([]);
+  const [offerStatusChanged, setOfferStatusChanged] = useState(false);
 
   const handleSignOut = () => {
     signOut();
@@ -67,23 +68,33 @@ const AppProvider = ({ children, signInWithGoogle, user, signOut }) => {
   }, [appUser]);
 
   useEffect(() => {
-    if (appUser)
+    console.log(appUser);
+    if (appUser) {
+      console.log("i'm running!");
       fetch(`/offers/${appUser.id}`)
         .then((res) => res.json())
         .then((data) => {
           console.log(data.data);
           setNewOffers(data.data);
+        })
+        .catch((error) => {
+          console.log(error);
         });
-  }, [appUser]);
+    }
+  }, [appUser, offerStatusChanged]);
+  console.log("context", newOffers);
   return (
     <AppContext.Provider
       value={{
         appUser,
         appUserItems,
         newOffers,
+        setNewOffers,
         signInWithGoogle,
         handleSignOut,
         message,
+        offerStatusChanged,
+        setOfferStatusChanged,
       }}
     >
       {children}
