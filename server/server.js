@@ -11,6 +11,12 @@ const {
   addItem,
   getUserById,
   getItemsByUserId,
+  createOffer,
+  getOffersByUserId,
+  updateOffer,
+  updateUser,
+  updateItem,
+  updateInfo,
 } = require("./handlers");
 
 require("dotenv").config();
@@ -42,9 +48,20 @@ app.post("/users", createUser);
 app.get("/getitems", getAllItems);
 app.get("/users/:userId/items", getItemsByUserId);
 app.get("/items/:itemId", getItemById);
+app.put("/items/:itemId/update", updateItem);
 app.get("/users/:userId", getUserById);
+app.put("/users/:userId/update", updateUser);
+
+//endpoint for checking new offers
+app.get("/offers/:userId", getOffersByUserId);
+app.put("/offers/:offerId/update", updateOffer);
 
 const upload = multer({ storage: multer.memoryStorage() });
+//endpoint for creating new offer
+app.post("/offers/addOffer", upload.none(), createOffer);
+
 app.post("/items/addItem", upload.single("file"), addItem);
+
+app.put("/updateInfo/:offerId", upload.none(), updateInfo);
 
 app.listen(4000, () => console.log(`Listening on port 4000`));

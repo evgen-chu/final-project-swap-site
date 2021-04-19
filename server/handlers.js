@@ -1,6 +1,5 @@
 const { sendResponse } = require("./utils");
-const users = require("./users.json");
-const items = require("./items.json");
+
 const firebase = require("firebase-admin");
 require("firebase/storage");
 require("firebase/firestore");
@@ -23,34 +22,52 @@ const db = firebase.firestore();
 const bucketName = process.env.FIREBASE_STORAGE_BUCKET;
 
 //GET item by id
-const getItemById = async (req, res) => {
-  const id = req.params.itemId;
+const getItemById_ = async (id) => {
   const db = firebase.firestore();
   const docRef = db.collection("items").doc(id);
   const doc = await docRef.get();
+  let mediaLink;
   if (!doc.exists) {
     console.log("No such document!");
   } else {
     console.log("Document data:", doc.data());
+    const imagePath = doc.data().images[0].fileName;
+    mediaLink = await storage
+      .bucket(bucketName)
+      .file(imagePath)
+      .getMetadata()
+      .then((results) => {
+        const meta = results[0];
+        return meta.mediaLink;
+      });
   }
+  return { ...doc.data(), id: doc.id, mediaLink };
+};
+const getItemById = async (req, res) => {
+  const id = req.params.itemId;
+  const item = await getItemById_(id);
 
-  return sendResponse(res, 200, doc.data());
+  return sendResponse(res, 200, item);
 };
 
 //GET user by id
 
-const getUserById = async (req, res) => {
-  const id = req.params.userId;
+const getUserById_ = async (id) => {
   const db = firebase.firestore();
   const docRef = db.collection("users").doc(id);
   const doc = await docRef.get();
   if (!doc.exists) {
     console.log("No such document!");
   } else {
-    console.log("Document data:", doc.data());
+    // console.log("Document data:", doc.data());
   }
+  return { ...doc.data(), id: doc.id };
+};
 
-  return sendResponse(res, 200, { ...doc.data(), id: doc.id });
+const getUserById = async (req, res) => {
+  const id = req.params.userId;
+  const user = await getUserById_(id);
+  return sendResponse(res, 200, user);
 };
 //GET all items of the user with specified id
 const getItemsByUserId = async (req, res) => {
@@ -66,7 +83,7 @@ const getItemsByUserId = async (req, res) => {
       const temp = [];
       querySnapshot.forEach((doc) => {
         // doc.data() is never undefined for query doc snapshots
-        console.log(doc.id, " => ", doc.data());
+        //console.log(doc.id, " => ", doc.data());
         temp.push({ ...doc.data(), id: doc.id });
       });
       sendResponse(res, 200, temp);
@@ -79,27 +96,9 @@ const getItemsByUserId = async (req, res) => {
 
 //POST add item
 const addItem = async (req, res) => {
-  console.log("here");
   const blob = storage
     .bucket(bucketName)
     .file("images/" + req.body.productId + "/" + req.file.originalname);
-
-  const items = db.collection("items");
-  const product = items.doc(req.body.productId);
-  const images = product.images != null ? product.images : [];
-  const fileName = blob.name;
-  const createdAt = Date.now();
-  images.push({ fileName: fileName, created: createdAt });
-  product.set({
-    name: req.body.productName,
-    created: Date.now(),
-    images: images,
-    description: req.body.productDescription,
-    category: req.body.productCategory,
-    location: req.body.productLocation,
-    numOfSwaps: 0,
-    user: 2,
-  });
 
   const blobWriter = blob.createWriteStream({
     metadata: {
@@ -111,51 +110,76 @@ const addItem = async (req, res) => {
     console.log(err);
   });
 
-  blobWriter.on("finish", (result) => {
+  blobWriter.on("finish", async (result) => {
     console.log("result");
     console.log(result);
     console.log("file name: " + blob.name);
+    let mediaLink = await blob.getMetadata().then((results) => {
+      const meta = results[0];
+      return meta.mediaLink;
+    });
+
+    console.log("Media link: " + mediaLink);
+    const items = db.collection("items");
+    const product = items.doc(req.body.productId);
+    const images = product.images != null ? product.images : [];
+    const fileName = blob.name;
+    const createdAt = Date.now();
+    images.push({
+      fileName: fileName,
+      created: createdAt,
+      publicLink: mediaLink,
+    });
+    product.set({
+      name: req.body.productName,
+      created: Date.now(),
+      images: images,
+      description: req.body.productDescription,
+      category: req.body.productCategory,
+      location: req.body.productLocation,
+      numOfSwaps: 0,
+      user: 2,
+    });
     return sendResponse(res, 200, req.file.name);
   });
-
   blobWriter.end(req.file.buffer);
 };
 
-//GET all items
+//GET all items with specific category (in my case Plants)
+// or get several items by id
 
 const getAllItems = async (req, res) => {
   const category = req.query.category;
-  console.log("here");
+  const ids = req.query.id;
   const db = firebase.firestore();
   const docsRef = db.collection("items");
-
-  const snapshot = await docsRef.where("category", "==", category).get();
-
-  if (snapshot.empty)
-    return sendResponse(res, 404, category, "no such category");
-  else {
-    const temp = [];
-    snapshot.forEach((doc) => {
-      console.log(doc.id);
-      temp.push({ ...doc.data(), id: doc.id });
-    });
-    return sendResponse(res, 200, temp);
+  if (category) {
+    const snapshot = await docsRef.where("category", "==", category).get();
+    if (snapshot.empty)
+      return sendResponse(res, 404, category, "no such category");
+    else {
+      const temp = [];
+      snapshot.forEach((doc) => {
+        temp.push({ ...doc.data(), id: doc.id });
+      });
+      return sendResponse(res, 200, temp);
+    }
   }
-  // const snapshot = await docsRef.get();
-  // snapshot.forEach((doc) => {
-  //   console.log(doc.id, "=>", doc.data());
-  // });
-  // const docs = await docsRef.get();
-  // if (!docs.exists) {
-  //   console.log("No such document!");
-  // } else {
-  //   console.log("Document data:", docs.data());
-  // }
 
-  return sendResponse(res, 200, docs.data());
+  if (ids) {
+    const snapshot = await docsRef.where("_id", "in", ids).get();
+    if (snapshot.empty) return sendResponse(res, 404, category, "no such item");
+    else {
+      const temp = [];
+      snapshot.forEach((doc) => {
+        temp.push({ ...doc.data(), id: doc.id });
+      });
+      return sendResponse(res, 200, temp);
+    }
+  }
 };
 
-// used in workshop
+// creating new user in DB or retrieving the one that is already there
 
 const queryDatabase = async (col, key) => {
   const ref = db.collection(col);
@@ -165,9 +189,9 @@ const queryDatabase = async (col, key) => {
   else {
     const temp = [];
     snapshot.forEach((doc) => {
-      temp.push(doc);
+      temp.push({ ...doc.data(), id: doc.id });
     });
-    return temp[0].data();
+    return temp[0];
   }
 };
 
@@ -175,11 +199,6 @@ const queryDatabase = async (col, key) => {
 const getUser = async (email) => {
   const data = await queryDatabase(`users`, email);
   return data;
-  // const dataValue = Object.keys(data)
-  //   .map((item) => data[item])
-  //   .find((obj) => obj.email === email);
-
-  // return dataValue || false;
 };
 
 const createUser = async (req, res) => {
@@ -191,7 +210,7 @@ const createUser = async (req, res) => {
     console.log(returningUser);
     res
       .status(200)
-      .json({ status: 200, data: req.body, message: "returning user" });
+      .json({ status: 200, data: returningUser, message: "returning user" });
     return;
   } else {
     const appUsersRef = db.collection("users");
@@ -206,6 +225,155 @@ const createUser = async (req, res) => {
   }
 };
 
+// here i will add all logic for offering
+
+//PUT create new offer
+const createOffer = (req, res) => {
+  console.log(req.body);
+  const items = db.collection("offers");
+  //req.body.offerId
+  const offer = items.doc("1");
+
+  const createdAt = Date.now();
+  offer.set({
+    user_bidder_id: req.body.userBidder,
+    user_offeree_id: req.body.userOfferee,
+    item_bidder_id: req.body.itemBidderId,
+    item_offeree_id: req.body.itemOffereeId,
+    message: req.body.message,
+    status: "pending",
+    created: createdAt,
+  });
+  return sendResponse(res, 200, req.body);
+};
+
+//get info for each offer
+const getOfferInfo = async (offers) => {
+  const temp = offers.map(async (offer) => {
+    const userBidder = await getUserById_(offer.user_bidder_id);
+    const itemBidder = await getItemById_(offer.item_bidder_id);
+    const itemOfferee = await getItemById_(offer.item_offeree_id);
+    const userOfferee = await getUserById_(offer.user_offeree_id);
+    return {
+      _id: offer._id,
+      created: offer.created,
+      message: offer.message,
+      userBidder,
+      itemBidder,
+      userOfferee,
+      itemOfferee,
+    };
+  });
+  return await Promise.all(temp);
+};
+
+//GET all offers by user id
+const getOffersByUserId = async (req, res) => {
+  const id = req.params.userId;
+  const ref = db.collection("offers");
+  const snapshot = await ref
+    .where("user_offeree_id", "==", id)
+    .where("status", "==", "pending")
+    .get();
+  if (snapshot.empty) return sendResponse(res, 404, req, "there is no offers");
+  else {
+    const temp = [];
+    snapshot.forEach((doc) => {
+      temp.push(doc.data());
+    });
+    // get data about bidder(user, item) and offeree(item) for each offer doc
+    console.log(temp);
+    const result = await getOfferInfo(temp);
+    console.log("Result:");
+    console.log(result);
+    return sendResponse(res, 200, result);
+  }
+};
+
+// PUT methods for updating item, user, offer
+
+const updateItem = async (req, res) => {
+  const id = req.params.itemId;
+  const userId = req.body.userId;
+  const numOfSwaps = req.body.numOfSwaps;
+  const batch = db.batch();
+  const itemRef = db.collection("items").doc(id);
+  batch.update(itemRef, { user: userId });
+  batch.update(itemRef, { numOfSwaps: Number(numOfSwaps) });
+  await batch.commit();
+  return sendResponse(res, 200, req.body);
+};
+const updateUser = async (req, res) => {
+  const id = req.params.userId;
+  const numOfSwaps = req.body.numOfSwaps;
+  const batch = db.batch();
+  const userRef = db.collection("users").doc(id);
+  batch.update(userRef, { numOfSwaps: Number(numOfSwaps) });
+  await batch.commit();
+  return sendResponse(res, 200, req.body);
+};
+const updateOffer = async (req, res) => {
+  const id = req.params.offerId;
+  const statusOffer = req.body.status;
+  const batch = db.batch();
+  const offerRef = db.collection("offers").doc(id);
+  batch.update(offerRef, { status: statusOffer });
+  await batch.commit();
+  return sendResponse(res, 200, req.body);
+};
+
+// one update of all info
+const getOfferById = async (id) => {
+  const db = firebase.firestore();
+  const docRef = db.collection("offers").doc(id);
+  const doc = await docRef.get();
+  if (!doc.exists) {
+    console.log("No such document!");
+  } else {
+    // console.log("Document data:", doc.data());
+  }
+  return { ...doc.data(), id: doc.id };
+};
+const updateInfo = async (req, res) => {
+  console.log(req.body);
+  const offerId = req.params.offerId;
+  const bidderUser = req.body.bidderUser;
+  const offereeUser = req.body.offereeUser;
+  const itemBidder = req.body.itemBidder;
+  const itemOfferee = req.body.itemOfferee;
+  const numOfSwaps_itemBid = req.body.numOfSwaps_itemBid;
+  const numOfSwaps_itemOff = req.body.numOfSwaps_itemOff;
+  const numOfSwaps_userBid = req.body.numOfSwaps_itemBid;
+  const numOfSwaps_userOff = req.body.numOfSwaps_itemOff;
+  const statusOffer = req.body.status;
+  const batch = db.batch();
+  if (statusOffer === "accepted") {
+    const offerRef = db.collection("offers").doc(offerId);
+    batch.update(offerRef, { status: statusOffer });
+
+    const itemBidderRef = db.collection("items").doc(itemBidder);
+    batch.update(itemBidderRef, { user: offereeUser });
+    batch.update(itemBidderRef, { numOfSwaps: Number(numOfSwaps_itemBid) });
+
+    const itemOffereeRef = db.collection("items").doc(itemOfferee);
+    batch.update(itemOffereeRef, { user: bidderUser });
+    batch.update(itemOffereeRef, { numOfSwaps: Number(numOfSwaps_itemOff) });
+
+    const userBidderRef = db.collection("users").doc(bidderUser);
+    batch.update(userBidderRef, { numOfSwaps: Number(numOfSwaps_userBid) });
+
+    const userOffereeRef = db.collection("users").doc(offereeUser);
+    batch.update(userOffereeRef, { numOfSwaps: Number(numOfSwaps_userOff) });
+  }
+
+  if (statusOffer === "rejected") {
+    const offerRef = db.collection("offers").doc(offerId);
+    batch.update(offerRef, { status: statusOffer });
+  }
+
+  await batch.commit();
+  return sendResponse(res, 200, req.body);
+};
 module.exports = {
   createUser,
   getItemById,
@@ -213,4 +381,10 @@ module.exports = {
   addItem,
   getUserById,
   getItemsByUserId,
+  getOffersByUserId,
+  createOffer,
+  updateUser,
+  updateOffer,
+  updateItem,
+  updateInfo,
 };

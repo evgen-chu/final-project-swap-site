@@ -1,15 +1,10 @@
 import { useState, useEffect } from "react";
-// import {
-//   projectStorage,
-//   projectFirestore,
-//   timestamp,
-// } from "../../server/firebase/config";
 
 const useStorage = (file, submit, form) => {
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState(null);
   const [url, setUrl] = useState(null);
-  const [id, setId] = useState(11);
+  const [id, setId] = useState(39);
 
   useEffect(() => {
     // const storageRef = projectStorage.ref(file.name);

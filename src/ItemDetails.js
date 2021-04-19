@@ -1,14 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import styled from "styled-components";
 import imgItem from "./assets/1.jpg";
 import { useParams, Link } from "react-router-dom";
 import { firebaseApp } from "./AppContext";
+import OfferModal from "./OfferModal";
+import Map from "./Map";
 
 const ItemDetails = () => {
   const { itemId } = useParams();
   const [currentItem, setCurrentItem] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
   const [imgUrl, setImgUrl] = useState(null);
+  const [isOpen, setIsOpen] = useState(false);
   useEffect(() => {
     console.log(itemId);
     fetch(`/items/${itemId}`)
@@ -45,17 +48,32 @@ const ItemDetails = () => {
           <div className="location"> {currentItem.location}</div>
           <div className="description">{currentItem.description}</div>
           <div className="category">{currentItem.category}</div>
+          <Map />
         </WrapperItem>
         {currentUser && (
           <WrapperUserInfo>
             <Link to={`/profile/${currentUser.id}`}>
               <StyledAvatar src={currentUser.photoURL} />
             </Link>
-            <div>
+            <InfoWrapper>
               <div>{currentUser.displayName}</div>
               <div className="date"> Member since {currentUser.registered}</div>
               <div> Has made {currentUser.numOfSwaps} swaps</div>
-            </div>
+              <button
+                onClick={() => {
+                  setIsOpen(true);
+                }}
+              >
+                {" "}
+                Make Offer{" "}
+              </button>
+            </InfoWrapper>
+            <OfferModal
+              open={isOpen}
+              setIsOpen={setIsOpen}
+              currentUser={currentUser}
+              currentItem={currentItem}
+            />
           </WrapperUserInfo>
         )}
       </Wrapper>
@@ -96,7 +114,7 @@ const WrapperUserInfo = styled.div`
   width: 20%;
 
   border-radius: 20px;
-  height: 200px;
+  height: 250px;
   background-color: white;
   font-size: 14pt;
   align-items: center;
@@ -123,6 +141,11 @@ const StyledAvatar = styled.img`
   border-radius: 50%;
   height: 100px;
   width: 100px;
+`;
+const InfoWrapper = styled.div`
+  button {
+    margin: auto;
+  }
 `;
 
 export default ItemDetails;
