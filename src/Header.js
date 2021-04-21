@@ -21,8 +21,6 @@ const Header = () => {
   const history = useHistory();
   const location = useLocation();
 
-  const path = window.location.pathname;
-
   console.log(location);
   // console.log(newOffers);
   return (

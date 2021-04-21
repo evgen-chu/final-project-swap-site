@@ -3,31 +3,28 @@ import ReactModal from "react-modal";
 import ProgressBar from "./ProgressBar";
 import styled from "styled-components";
 import useStorage from "./hooks/useStorage";
+import Map from "./Map";
+import UploadForm from "./UploadForm";
 
-const UploadModal = ({ isOpen, setOpen }) => {
+const UploadModal = ({ isOpen, setOpen, itemAdded, setItemAdded }) => {
   const [file, setFile] = useState(null);
   const [error, setError] = useState(null);
+
   const [form, setForm] = useState({
     name: "",
     description: "",
     category: "",
-    location: "",
+    district: "",
+    location_lat: null,
+    location_lng: null,
   });
   const [submit, setSubmit] = useState(false);
   // const [tags, setTags] = useState([]);
   // const [tag, setTag] = useState(null);
 
   const types = ["image/png", "image/jpeg"];
-  const categories = [
-    "Plants",
-    "Books",
-    "Board Games",
-    "Sports",
-    "Toys",
-    "Music",
-    "Computers",
-  ];
-  const { url } = useStorage(file, submit, form);
+  const categories = ["Easy", "Intermidiate", "Expert"];
+  const { url } = useStorage(file, submit, form, itemAdded, setItemAdded);
   const changeHandler = (e) => {
     let selected = e.target.files[0];
 
@@ -45,6 +42,7 @@ const UploadModal = ({ isOpen, setOpen }) => {
     if (file) {
       //   const { url } = useStorage(file, submit, form);
       setSubmit(!submit);
+      //setItemAdded(!itemAdded);
       setOpen(false);
     }
   };
@@ -71,23 +69,38 @@ const UploadModal = ({ isOpen, setOpen }) => {
           }}
         />
         <select
-          placeholder="category"
+          placeholder="Care level"
           onChange={(e) => {
             setForm({ ...form, category: e.target.value });
           }}
         >
+          <option> Choose care level</option>
           {categories.map((item, index) => (
             <option key={item + "-" + index}>{item}</option>
           ))}
         </select>
-
         <input
+          className="district"
+          type="text"
+          onChange={(e) => {
+            setForm({ ...form, district: e.target.value });
+          }}
+        />
+        <label> Choose location:</label>
+        <ChooseLocation
+          form={form}
+          setForm={setForm}
+          itemAdded={itemAdded}
+          setItemAdded={setItemAdded}
+        />
+
+        {/* <input
           type="text"
           placeholder="Location"
           onChange={(e) => {
             setForm({ ...form, location: e.target.value });
           }}
-        />
+        /> */}
         <ButtonWrapper>
           <button
             onClick={(ev) => {
@@ -113,7 +126,7 @@ const Modal = styled(ReactModal)`
   background-color: #f0f8ff;
   position: absolute;
   width: 50%;
-  height: 20%;
+  height: 60%;
   outline: none;
   background: #fff;
   margin: auto;
@@ -151,6 +164,12 @@ const ButtonWrapper = styled.div`
   width: 40%;
   display: flex;
   justify-content: space-around;
+`;
+const ChooseLocation = styled(Map)`
+  width: 50%;
+  height: 20%;
+  visibility: visible;
+  z-index: 100;
 `;
 
 export default UploadModal;

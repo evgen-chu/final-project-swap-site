@@ -9,6 +9,7 @@ const uuidv4 = require("uuid/v4");
 require("dotenv").config();
 
 var serviceAccount = require("C:\\Users\\eugen\\Documents\\concordia-bootcamps\\final-project\\fp-swap-site\\server\\swap-app-key.json");
+const { logDOM } = require("@testing-library/dom");
 
 firebase.initializeApp({
   credential: firebase.credential.cert(serviceAccount),
@@ -136,9 +137,11 @@ const addItem = async (req, res) => {
       images: images,
       description: req.body.productDescription,
       category: req.body.productCategory,
-      location: req.body.productLocation,
+      district: req.body.productDistrict,
+      location_lat: req.body.productLocation_lat,
+      location_lng: req.body.productLocation_lng,
       numOfSwaps: 0,
-      user: 2,
+      user: req.body.productUser,
     });
     return sendResponse(res, 200, req.file.name);
   });
@@ -387,7 +390,6 @@ const updateInfo = async (req, res) => {
 
 //GET all items that includes in there name searchItem
 const searchItem = (req, res) => {
-  console.log("I'm in search");
   let searchResult = [];
   let searchItem = req.params.searchItem;
   const docRef = db.collection("items");
@@ -409,6 +411,46 @@ const searchItem = (req, res) => {
     });
 };
 
+//DELETE item by id
+
+const deleteItem = async (req, res) => {
+  console.log("delete");
+  const id = req.params.itemId;
+  console.log(id);
+  const db = firebase.firestore();
+  const docRef = db.collection("items").doc(id);
+  const result = await docRef.delete();
+  sendResponse(res, 200, id);
+};
+
+//Sending mails
+// using Twilio SendGrid's v3 Node.js Library
+// https://github.com/sendgrid/sendgrid-nodejs
+const sgMail = require("@sendgrid/mail");
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+console.log(process.env.SENDGRID_API_KEY);
+const sendMail = (req, res) => {
+  const recipient = req.body.emailRecipient;
+  const sender = req.body.emailSender;
+  const senderName = req.body.nameSender;
+  const message = req.body.message;
+  const msg = {
+    to: recipient + ",artemij.chugreev@gmail.com", // Change to your recipient
+    from: "evgeniia.vyushkova@gmail.com", // Change to your verified sender
+    subject: `You have new message from ${senderName} <${sender}>`,
+    text: message,
+    html: "<strong>and easy to do anywhere, even with Node.js</strong>",
+  };
+  sgMail
+    .send(msg)
+    .then(() => {
+      console.log("Email sent");
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+};
+
 module.exports = {
   createUser,
   getItemById,
@@ -423,4 +465,6 @@ module.exports = {
   updateItem,
   updateInfo,
   searchItem,
+  deleteItem,
+  sendMail,
 };

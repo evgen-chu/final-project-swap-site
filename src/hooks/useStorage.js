@@ -1,11 +1,13 @@
-import { useState, useEffect } from "react";
-
-const useStorage = (file, submit, form) => {
+import { useState, useEffect, useContext } from "react";
+import { AppContext } from "../AppContext";
+import { v4 as uuid } from "uuid";
+const useStorage = (file, submit, form, itemAdded, setItemAdded) => {
+  const { appUser } = useContext(AppContext);
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState(null);
   const [url, setUrl] = useState(null);
-  const [id, setId] = useState(39);
-
+  //const [id, setId] = useState(50);
+  const id = uuid();
   useEffect(() => {
     // const storageRef = projectStorage.ref(file.name);
     // const collectionRef = projectFirestore.collection("images");
@@ -35,15 +37,21 @@ const useStorage = (file, submit, form) => {
       formData.append("productId", id);
       formData.append("productName", form.name);
       formData.append("productDescription", form.description);
-      formData.append("productLocation", form.location);
+      formData.append("productLocation_lat", form.location_lat);
+      formData.append("productLocation_lng", form.location_lng);
+      formData.append("productDistrict", form.district);
       formData.append("productCategory", form.category);
+      formData.append("productUser", appUser.id);
       fetch("/items/addItem", {
         method: "POST",
         // headers: { "Content-Type": "multipart/form-data" },
         body: formData,
-      }).then((data) => console.log(data));
+      }).then((data) => {
+        console.log(data);
+        setItemAdded(!itemAdded);
+      });
 
-      setId(id + 1);
+      // setId(id + 1);
     }
   }, [submit]);
 
