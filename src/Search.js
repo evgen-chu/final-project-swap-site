@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { FiSearch } from "react-icons/fi";
 import { useHistory } from "react-router-dom";
 
-const Search = () => {
+const Search = ({ setItems }) => {
   const history = useHistory();
   const [searchItem, setSearchItem] = useState("");
   const [resultItems, setResultItems] = useState();
@@ -73,6 +73,13 @@ const Search = () => {
           }}
         />
         <SearchIcon />
+        <button
+          onClick={(e) => {
+            //setItems(resultItems);
+          }}
+        >
+          Search
+        </button>
       </Wrapper>
       {isComponentVisible && resultItems && searchItem.length >= 2 && (
         <SuggestionWrapper ref={ref} visible={isComponentVisible}>

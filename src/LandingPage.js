@@ -56,7 +56,7 @@ const LandingPage = () => {
       <Banner>
         <Img src={plantExchange} />
       </Banner>
-      <SearchBar />
+      <SearchBar setItems={setItems} />
 
       <Divider />
       <ImageGrid items={imgUrls} />

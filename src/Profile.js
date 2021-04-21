@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useContext } from "react";
 import styled, { keyframes } from "styled-components";
 import ImageGrid from "./ImageGrid";
-import UploadForm from "./UploadForm";
 import UploadModal from "./UploadModal";
 import { useParams } from "react-router-dom";
 import { IoFlowerOutline } from "react-icons/io5";
 import { AppContext } from "./AppContext";
 import { firebaseApp } from "./AppContext";
+import SunFlower from "./SunFlower";
 
 const Profile = () => {
   const { appUser, newOffers } = useContext(AppContext);
@@ -15,6 +15,9 @@ const Profile = () => {
   const [userItems, setUserItems] = useState([]);
   const [currentUser, setCurrentUser] = useState();
   const [status, setStatus] = useState("loading");
+  const [statusUser, setStatusUser] = useState("loading");
+  const [deleteFlag, setDeleteFlag] = useState(true);
+  const [itemAdded, setItemAdded] = useState(true);
 
   const [imgUrls, setImgUrls] = useState([]);
 
@@ -23,6 +26,7 @@ const Profile = () => {
       .then((res) => res.json())
       .then((data) => {
         setCurrentUser(data.data);
+        setStatusUser("idle");
       });
   }, [userId]);
 
@@ -32,7 +36,7 @@ const Profile = () => {
       .then((data) => {
         setUserItems(data.data);
       });
-  }, [currentUser]);
+  }, [currentUser, deleteFlag, itemAdded]);
 
   const setItems = async () => {
     if (userItems) {
@@ -68,7 +72,9 @@ const Profile = () => {
   }, [userItems]);
   return (
     <Wrapper>
-      {currentUser && (
+      {statusUser === "loading" ? (
+        <Loader />
+      ) : (
         <WrapperUserInfo>
           <div>
             <StyledAvatar src={currentUser.photoURL} />
@@ -89,15 +95,31 @@ const Profile = () => {
           Add item
         </button>
       )}
-      <UploadModal isOpen={open} setOpen={setOpen} />
+      <UploadModal
+        isOpen={open}
+        setOpen={setOpen}
+        itemAdded={itemAdded}
+        setItemAdded={setItemAdded}
+      />
       <GridWrapper>
-        {status === "loading" ? <Loader /> : <ImageGrid items={imgUrls} />}
+        {status === "loading" ? (
+          <Loader />
+        ) : (
+          <ImageGrid
+            deleteFlag={deleteFlag}
+            setDeleteFlag={setDeleteFlag}
+            items={imgUrls}
+            currentUser={currentUser}
+          />
+        )}
         {/* {imgUrls.length === userItems.length ? (
           <ImageGrid items={imgUrls} />
         ) : (
           <div>loading</div>
         )} */}
       </GridWrapper>
+
+      <SunFlower />
     </Wrapper>
   );
 };

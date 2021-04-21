@@ -1,14 +1,24 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import styled from "styled-components";
 import { useHistory } from "react-router-dom";
+import { AppContext } from "./AppContext";
 
-const ImageGrid = ({ items }) => {
+const ImageGrid = ({ items, deleteFlag, setDeleteFlag, currentUser }) => {
+  const { appUser } = useContext(AppContext);
   const history = useHistory();
-  items && console.log(items);
   const [updatedItems, setUpdatedItems] = useState(null);
   useEffect(() => {
     setUpdatedItems(items);
   }, [items]);
+
+  const handleDelete = (e, id) => {
+    e.stopPropagation();
+    console.log("Delete this item!");
+    fetch(`/items/${id}/delete`, { method: "DELETE" }).then((res) => {
+      console.log(res);
+    });
+    setDeleteFlag(!deleteFlag);
+  };
   return (
     <ImgWrapper className="img-grid">
       {updatedItems &&
@@ -21,6 +31,14 @@ const ImageGrid = ({ items }) => {
                 history.push(`/items/${item.id}`);
               }}
             >
+              {appUser && currentUser && appUser.id === currentUser.id && (
+                <button
+                  className="delete"
+                  onClick={(e) => handleDelete(e, item.id)}
+                >
+                  -
+                </button>
+              )}
               <Img src={item.url} alt="uploaded pic" />
               <div className="name">{item.name}</div>
               {/* <div className="category">{item.category}</div> */}
@@ -43,6 +61,7 @@ const Img = styled.img`
 const ItemWrapper = styled.div`
   display: flex;
   flex: 0 0 23%;
+  position: relative;
 
   flex-direction: column;
   align-items: center;
@@ -53,6 +72,28 @@ const ItemWrapper = styled.div`
   .category {
     opacity: 60%;
     font-size: 10pt;
+  }
+
+  .delete {
+    position: absolute;
+    background-color: red;
+    border-radius: 50%;
+    height: 40px;
+    width: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 20pt;
+    font-weight: bold;
+    visibility: hidden;
+    opacity: 70%;
+  }
+
+  &:hover {
+    .delete {
+      visibility: visible;
+    }
   }
 `;
 

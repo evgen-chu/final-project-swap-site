@@ -5,6 +5,7 @@ import { useParams, Link } from "react-router-dom";
 import { firebaseApp } from "./AppContext";
 import OfferModal from "./OfferModal";
 import Map from "./Map";
+import MessageModal from "./MessageModal";
 
 const ItemDetails = () => {
   const { itemId } = useParams();
@@ -12,6 +13,7 @@ const ItemDetails = () => {
   const [currentUser, setCurrentUser] = useState(null);
   const [imgUrl, setImgUrl] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
+  const [openMessage, setOpenMessage] = useState(false);
   useEffect(() => {
     console.log(itemId);
     fetch(`/items/${itemId}`)
@@ -45,10 +47,13 @@ const ItemDetails = () => {
         <WrapperItem>
           <ImgWrapper>{imgUrl && <ItemImg src={imgUrl} />}</ImgWrapper>
           <div className="name">{currentItem.name}</div>
-          <div className="location"> {currentItem.location}</div>
+          <div className="location"> Montreal, {currentItem.district}</div>
           <div className="description">{currentItem.description}</div>
           <div className="category">{currentItem.category}</div>
-          <Map />
+          <Map
+            itemLat={Number(currentItem.location_lat)}
+            itemLng={Number(currentItem.location_lng)}
+          />
         </WrapperItem>
         {currentUser && (
           <WrapperUserInfo>
@@ -64,13 +69,26 @@ const ItemDetails = () => {
                   setIsOpen(true);
                 }}
               >
-                {" "}
                 Make Offer{" "}
+              </button>
+              <button
+                onClick={() => {
+                  setOpenMessage(true);
+                }}
+              >
+                {" "}
+                Send Message
               </button>
             </InfoWrapper>
             <OfferModal
               open={isOpen}
               setIsOpen={setIsOpen}
+              currentUser={currentUser}
+              currentItem={currentItem}
+            />
+            <MessageModal
+              open={openMessage}
+              setIsOpen={setOpenMessage}
               currentUser={currentUser}
               currentItem={currentItem}
             />
