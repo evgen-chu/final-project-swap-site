@@ -1,16 +1,23 @@
 import React, { useEffect, useState, useRef } from "react";
 import styled from "styled-components";
 import { FiSearch } from "react-icons/fi";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 
-const Search = ({ setItems }) => {
+const Search = ({
+  setItems,
+  searchApplied,
+  setSearchApplied,
+  searchItem,
+  setSearchItem,
+}) => {
   const history = useHistory();
-  const [searchItem, setSearchItem] = useState("");
+
   const [resultItems, setResultItems] = useState();
   const [index, setIndex] = useState(-1);
 
   const [isComponentVisible, setIsComponentVisible] = useState(true);
   const ref = useRef();
+  const location = useLocation();
   const handleClickOutside = (e) => {
     if (ref.current) {
       if (!ref.current.contains(e.target)) {
@@ -28,7 +35,8 @@ const Search = ({ setItems }) => {
 
   useEffect(() => {
     console.log(searchItem);
-    if (searchItem.length > 2) {
+    if (searchItem && searchItem.length > 2) {
+      console.log("in search");
       fetch(`/searchItem/${searchItem}`)
         .then((res) => res.json())
         .then((data) => {
@@ -73,13 +81,16 @@ const Search = ({ setItems }) => {
           }}
         />
         <SearchIcon />
-        <button
-          onClick={(e) => {
-            //setItems(resultItems);
-          }}
-        >
-          Search
-        </button>
+        {location.pathname === "/home" && (
+          <Button
+            onClick={(e) => {
+              setItems(resultItems);
+              setSearchApplied(true);
+            }}
+          >
+            Search
+          </Button>
+        )}
       </Wrapper>
       {isComponentVisible && resultItems && searchItem.length >= 2 && (
         <SuggestionWrapper ref={ref} visible={isComponentVisible}>
@@ -104,8 +115,7 @@ const Search = ({ setItems }) => {
                     setIndex(ind);
                   }}
                 >
-                  {/* <Img src={item.imageSrc} />
-                  <div className="price">{item.price}</div> */}
+                  <Img src={item.images[0].publicLink} />
                   <div>{item.name}</div>
                 </Suggestion>
               );
@@ -120,6 +130,11 @@ const Search = ({ setItems }) => {
 const Wrapper = styled.div`
   position: relative;
   display: flex;
+  @media (max-width: 900px) {
+    position: absolute;
+    top: 70px;
+    left: 0;
+  }
 `;
 const Input = styled.input`
   width: 300px;
@@ -142,7 +157,7 @@ const SearchIcon = styled(FiSearch)`
 `;
 const SuggestionWrapper = styled.div`
   position: absolute;
-  width: 500px;
+  width: 370px;
   margin-top: 3px;
   padding: 8px 0;
   background-color: #fff;
@@ -150,14 +165,14 @@ const SuggestionWrapper = styled.div`
   border: 1px solid rgba(0, 0, 0, 0.2);
   border-radius: 8px;
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
-  height: 300px;
+  height: 100px;
   overflow: scroll;
   overflow-x: hidden;
   visibility: ${(props) => (props.visible ? "visible" : "hidden")};
   z-index: 5;
 `;
 const Suggestion = styled.li`
-  padding: 3px 20px;
+  padding: 3px;
   font-size: 18px;
   line-height: 24px;
   color: black;
@@ -173,6 +188,18 @@ const Img = styled.img`
   height: 30px;
   width: 30px;
   margin-right: 30px;
+`;
+
+const Button = styled.div`
+  border-radius: 5px;
+  height: 30px;
+  font-family: "RocknRoll One", sans-serif;
+  font-size: 12pt;
+  display: flex;
+  align-items: center;
+  border: 1px solid #414042;
+  margin-left: 10px;
+  width: 60px;
 `;
 
 export default Search;

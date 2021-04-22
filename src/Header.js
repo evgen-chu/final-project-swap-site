@@ -8,8 +8,11 @@ import { AiOutlineInteraction } from "react-icons/ai";
 import flower from "./assets/flower.svg";
 import { GiFlowerPot } from "react-icons/gi";
 import Search from "./Search";
+import plant4 from "./assets/topplant-3.svg";
 
 const Header = () => {
+  const [searchItem, setSearchItem] = useState("");
+
   const {
     appUser,
     newOffers,
@@ -24,64 +27,72 @@ const Header = () => {
   console.log(location);
   // console.log(newOffers);
   return (
-    <Wrapper>
-      <Logo to="/home">
-        PlantSWAP <FlowerIcon />{" "}
-      </Logo>
-      {location.pathname !== "/home" && <Search />}
-      <StyledHeader>
-        {appUser && appUser.email ? (
-          <>
-            <StyledUserContainer>
-              {newOffers.length > 0 && (
-                <OfferNumber
-                  onClick={() => {
-                    history.push("/offers");
-                  }}
-                >
-                  {newOffers.length}
-                </OfferNumber>
-              )}
-              <AvatarWrapper to={`/profile/${appUser.id}`}>
-                <Avatar src={appUser.photoURL} />
-              </AvatarWrapper>
-              {/* <p>
+    <>
+      {location.pathname !== "/" && (
+        <Wrapper>
+          <Logo to="/home">
+            PlantSwap
+            {/* <FlowerIcon />{" "} */}
+            <ImgIcon src={plant4} />
+          </Logo>
+          {location.pathname !== "/" && location.pathname !== "/home" && (
+            <Search searchItem={searchItem} setSearchItem={setSearchItem} />
+          )}
+
+          <StyledHeader>
+            {appUser && appUser.email ? (
+              <>
+                <StyledUserContainer>
+                  {newOffers.length > 0 && (
+                    <OfferNumber
+                      onClick={() => {
+                        history.push("/offers");
+                      }}
+                    >
+                      {newOffers.length}
+                    </OfferNumber>
+                  )}
+                  <AvatarWrapper to={`/profile/${appUser.id}`}>
+                    <Avatar src={appUser.photoURL} />
+                  </AvatarWrapper>
+                  {/* <p>
                 {appUser.displayName}
                ({appUser.email}) 
               </p> */}
-            </StyledUserContainer>
-            <Button onClick={handleSignOut}>Sign Out</Button>{" "}
-          </>
-        ) : (
-          <Button onClick={signInWithGoogle}>Sign In</Button>
-        )}
-      </StyledHeader>
-    </Wrapper>
+                </StyledUserContainer>
+                <Button onClick={handleSignOut}>Sign Out</Button>{" "}
+              </>
+            ) : (
+              <Button onClick={signInWithGoogle}>Sign In</Button>
+            )}
+          </StyledHeader>
+        </Wrapper>
+      )}
+    </>
   );
 };
 
 const Wrapper = styled.div`
-  background-color: #8fbc8f;
+  background-color: #ffd800;
   grid-area: header;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
 `;
-
+const ImgIcon = styled.img`
+  height: 100px;
+  width: 100px;
+`;
 const Logo = styled(Link)`
   text-decoration: none;
-  color: black;
-  font-family: "Concert One", cursive;
+  margin-left: 30px;
+  color: #414042;
+  font-family: "RocknRoll One", sans-serif;
   font-size: 30pt;
   display: flex;
   align-items: center;
-  background-color: #8fbc8f;
-`;
-const FlowerIcon = styled(GiFlowerPot)`
-  margin-left: 20px;
-  width: 40px;
-  heigth: 40px;
+  background-color: #ffd800;
+  z-index: 2;
 `;
 
 const StyledHeader = styled.nav`
@@ -106,10 +117,10 @@ const Button = styled.button`
 `;
 
 const OfferNumber = styled.button`
-  width: 25px;
-  height: 25px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
-  background-color: #f08080;
+  background-color: #fca44e;
   color: white;
   font-size: 16pt;
   font-weight: bold;
@@ -120,7 +131,7 @@ const OfferNumber = styled.button`
   box-shadow: 2px 6px 24px -3px rgba(0, 0, 0, 0.53);
 `;
 const AvatarWrapper = styled(Link)`
-  background-color: #8fbc8f;
+  background-color: #ffd800;
 `;
 
 export default Header;

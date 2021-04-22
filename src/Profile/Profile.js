@@ -1,12 +1,17 @@
 import React, { useState, useEffect, useContext } from "react";
 import styled, { keyframes } from "styled-components";
-import ImageGrid from "./ImageGrid";
+import ImageGrid from "../ImageGrid";
 import UploadModal from "./UploadModal";
 import { useParams } from "react-router-dom";
 import { IoFlowerOutline } from "react-icons/io5";
-import { AppContext } from "./AppContext";
-import { firebaseApp } from "./AppContext";
-import SunFlower from "./SunFlower";
+import { AppContext } from "../AppContext";
+import { firebaseApp } from "../AppContext";
+import SunFlower from "../SunFlower";
+import backImg from "../assets/section11.png";
+import topImg from "../assets/section6top.png";
+import bottomImg from "../assets/section6topr.png";
+import imgplant1 from "../assets/plant3.png";
+import imgplant2 from "../assets/aloe.png";
 
 const Profile = () => {
   const { appUser, newOffers } = useContext(AppContext);
@@ -38,40 +43,42 @@ const Profile = () => {
       });
   }, [currentUser, deleteFlag, itemAdded]);
 
-  const setItems = async () => {
-    if (userItems) {
-      console.log(userItems);
-      const tempUrls = [];
+  // const setItems = async () => {
+  //   if (userItems) {
+  //     console.log(userItems);
+  //     const tempUrls = [];
 
-      let promises = userItems.map((item) => {
-        return firebaseApp
-          .storage()
-          .ref(item.images[0].fileName)
-          .getDownloadURL();
-      });
-      await Promise.all(promises).then((results) => {
-        results.forEach((result, index) => {
-          const item = userItems[index];
-          tempUrls.push({
-            id: item.id,
-            url: result,
-            name: item.name,
-            category: item.category,
-          });
-        });
-      });
-      return tempUrls;
-    }
-    return [];
-  };
-  useEffect(async () => {
-    let tempUrls = await setItems();
-    console.log(tempUrls);
-    setImgUrls(tempUrls);
-    setStatus("idle");
-  }, [userItems]);
+  //     let promises = userItems.map((item) => {
+  //       return firebaseApp
+  //         .storage()
+  //         .ref(item.images[0].fileName)
+  //         .getDownloadURL();
+  //     });
+  //     await Promise.all(promises).then((results) => {
+  //       results.forEach((result, index) => {
+  //         const item = userItems[index];
+  //         tempUrls.push({
+  //           id: item.id,
+  //           url: result,
+  //           name: item.name,
+  //           category: item.category,
+  //         });
+  //       });
+  //     });
+  //     return tempUrls;
+  //   }
+  //   return [];
+  // };
+  // useEffect(async () => {
+  //   let tempUrls = await setItems();
+  //   console.log(tempUrls);
+  //   setImgUrls(tempUrls);
+  //   setStatus("idle");
+  // }, [userItems]);
+  console.log(userItems);
   return (
     <Wrapper>
+      <ImgTop src={topImg} />
       {statusUser === "loading" ? (
         <Loader />
       ) : (
@@ -102,30 +109,27 @@ const Profile = () => {
         setItemAdded={setItemAdded}
       />
       <GridWrapper>
-        {status === "loading" ? (
-          <Loader />
-        ) : (
-          <ImageGrid
-            deleteFlag={deleteFlag}
-            setDeleteFlag={setDeleteFlag}
-            items={imgUrls}
-            currentUser={currentUser}
-          />
-        )}
-        {/* {imgUrls.length === userItems.length ? (
-          <ImageGrid items={imgUrls} />
-        ) : (
-          <div>loading</div>
-        )} */}
+        <ImageGrid
+          deleteFlag={deleteFlag}
+          setDeleteFlag={setDeleteFlag}
+          items={userItems}
+          currentUser={currentUser}
+        />
       </GridWrapper>
-
-      <SunFlower />
+      <Section>
+        <img src={bottomImg} />
+      </Section>
+      <ImgPlant1 src={imgplant1} />
+      <ImgPlant2 src={imgplant2} />
     </Wrapper>
   );
 };
 
 const Wrapper = styled.div`
   display: flex;
+  position: relative;
+  background-color: #319365;
+  //background-color: #62c785;
   flex-direction: column;
   justify-content: center;
   align-items: center;
@@ -143,6 +147,8 @@ const StyledAvatar = styled.img`
 `;
 
 const WrapperUserInfo = styled.div`
+  position: absolute;
+  top: 10%;
   display: flex;
   width: 40%;
   self-align: center;
@@ -160,10 +166,22 @@ const WrapperUserInfo = styled.div`
     margin: 5px;
   }
 `;
+const Section = styled.div`
+  width: 100%;
+  // background-image: url(${bottomImg});
+  background-color: #62c785;
+  height: 150px;
+  img {
+    width: 100%;
+    height: 150px;
+  }
+`;
 
 const GridWrapper = styled.div`
-  margin-top: 20px;
+  // position: absolute;
   width: 100%;
+  background-image: url(${backImg});
+  margin-top: 20px;
   background-color: white;
 `;
 
@@ -181,5 +199,21 @@ const Loader = styled(IoFlowerOutline)`
     animation: ${rotation} 2s infinite linear;
   }
 `;
-
+const ImgTop = styled.img`
+  width: 100%;
+`;
+const ImgPlant1 = styled.img`
+  position: absolute;
+  width: 200px;
+  height: 300px;
+  right: 0;
+  top: -42px; ;
+`;
+const ImgPlant2 = styled.img`
+  position: absolute;
+  left: 30px;
+  top: 70%;
+  width: 250px;
+  height: 250px;
+`;
 export default Profile;

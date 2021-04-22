@@ -4,9 +4,14 @@ const sendResponse = (res, status, data, message = "No message included.") => {
 
 const searchForItem = (modal, searchItem) => {
   const searchResults = modal.filter((item) => {
-    console.log(item.name, searchItem);
+    console.log(
+      item,
+      searchItem,
+      item.name.toLowerCase().includes(searchItem.toLowerCase())
+    );
     return item.name.toLowerCase().includes(searchItem.toLowerCase());
   });
+  console.log(searchResults);
   return searchResults;
 };
 

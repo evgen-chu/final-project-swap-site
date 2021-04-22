@@ -132,6 +132,7 @@ const addItem = async (req, res) => {
       publicLink: mediaLink,
     });
     product.set({
+      id: req.body.productId,
       name: req.body.productName,
       created: Date.now(),
       images: images,
@@ -152,21 +153,20 @@ const addItem = async (req, res) => {
 // or get several items by id
 
 const getAllItems = async (req, res) => {
-  const category = req.query.category;
+  //const category = req.query.category;
   const ids = req.query.id;
   const db = firebase.firestore();
   const docsRef = db.collection("items");
-  if (category) {
-    const snapshot = await docsRef.where("category", "==", category).get();
-    if (snapshot.empty)
-      return sendResponse(res, 404, category, "no such category");
-    else {
-      const temp = [];
-      snapshot.forEach((doc) => {
-        temp.push({ ...doc.data(), id: doc.id });
-      });
-      return sendResponse(res, 200, paginatedResults(req, temp));
-    }
+
+  const snapshot = await docsRef.get();
+  if (snapshot.empty)
+    return sendResponse(res, 404, category, "no such category");
+  else {
+    const temp = [];
+    snapshot.forEach((doc) => {
+      temp.push({ ...doc.data(), id: doc.id });
+    });
+    return sendResponse(res, 200, paginatedResults(req, temp));
   }
 
   if (ids) {
@@ -235,7 +235,8 @@ const createOffer = (req, res) => {
   console.log(req.body);
   const items = db.collection("offers");
   //req.body.offerId
-  const offer = items.doc("1");
+  const id = uuidv4();
+  const offer = items.doc(id);
 
   const createdAt = Date.now();
   offer.set({
@@ -333,17 +334,7 @@ const updateOffer = async (req, res) => {
 };
 
 // one update of all info
-const getOfferById = async (id) => {
-  const db = firebase.firestore();
-  const docRef = db.collection("offers").doc(id);
-  const doc = await docRef.get();
-  if (!doc.exists) {
-    console.log("No such document!");
-  } else {
-    // console.log("Document data:", doc.data());
-  }
-  return { ...doc.data(), id: doc.id };
-};
+
 const updateInfo = async (req, res) => {
   console.log(req.body);
   const offerId = req.params.offerId;
@@ -389,21 +380,43 @@ const updateInfo = async (req, res) => {
 };
 
 //GET all items that includes in there name searchItem
-const searchItem = (req, res) => {
+const getFullItemsInfo = async (items) => {
+  const ids = items.map((item) => item.id);
+  const db = firebase.firestore();
+  const docsRef = db.collection("items");
+
+  if (ids) {
+    const snapshot = await docsRef.where("id", "in", ids).get();
+    if (snapshot.empty) return [];
+    else {
+      const temp = [];
+      snapshot.forEach((doc) => {
+        temp.push({ ...doc.data(), id: doc.id });
+      });
+      return temp;
+    }
+  }
+  return [];
+};
+const searchItem = async (req, res) => {
   let searchResult = [];
   let searchItem = req.params.searchItem;
+  console.log(searchItem);
   const docRef = db.collection("items");
 
   docRef
     .select("_id")
     .select("name")
     .get()
-    .then((querySnapshot) => {
+    .then(async (querySnapshot) => {
       const temp = [];
       querySnapshot.forEach((doc) => {
         temp.push({ ...doc.data(), id: doc.id });
       });
-      searchResult = searchForItem(temp, searchItem);
+      console.log(temp);
+      const searchResultTemp = searchForItem(temp, searchItem);
+      searchResult = await getFullItemsInfo(searchResultTemp);
+      console.log(searchResult);
       sendResponse(res, 200, searchResult);
     })
     .catch((error) => {
@@ -435,11 +448,11 @@ const sendMail = (req, res) => {
   const senderName = req.body.nameSender;
   const message = req.body.message;
   const msg = {
-    to: recipient + ",artemij.chugreev@gmail.com", // Change to your recipient
+    to: recipient, // Change to your recipient
     from: "evgeniia.vyushkova@gmail.com", // Change to your verified sender
     subject: `You have new message from ${senderName} <${sender}>`,
     text: message,
-    html: "<strong>and easy to do anywhere, even with Node.js</strong>",
+    html: `<strong>${message}</strong>`,
   };
   sgMail
     .send(msg)

@@ -6,8 +6,8 @@ const useStorage = (file, submit, form, itemAdded, setItemAdded) => {
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState(null);
   const [url, setUrl] = useState(null);
-  //const [id, setId] = useState(50);
-  const id = uuid();
+  const [id, setId] = useState(16);
+  //const id = uuid();
   useEffect(() => {
     // const storageRef = projectStorage.ref(file.name);
     // const collectionRef = projectFirestore.collection("images");
@@ -51,7 +51,7 @@ const useStorage = (file, submit, form, itemAdded, setItemAdded) => {
         setItemAdded(!itemAdded);
       });
 
-      // setId(id + 1);
+      setId(id + 1);
     }
   }, [submit]);
 

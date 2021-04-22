@@ -5,10 +5,10 @@ import styled from "styled-components";
 
 import Header from "./Header";
 import Footer from "./Footer";
-import LandingPage from "./LandingPage";
-import BrowsePage from "./BrowsePage";
-import ItemDetails from "./ItemDetails";
-import Profile from "./Profile";
+import LandingPage from "./HomePage/LandingPage";
+import LandingPageNew from "./LandingPageNew";
+import ItemDetails from "./ItemDetails/ItemDetails";
+import Profile from "./Profile/Profile";
 import Offers from "./Offers";
 
 function App() {
@@ -18,6 +18,7 @@ function App() {
 
       <Router>
         <Header />
+
         <div>
           <Switch>
             <Route exact path="/profile/:userId">
@@ -25,6 +26,9 @@ function App() {
             </Route>
             <Route exact path="/home">
               <LandingPage />
+            </Route>
+            <Route exact path="/">
+              <LandingPageNew />
             </Route>
 
             <Route exact path="/items/:itemId">
@@ -35,6 +39,7 @@ function App() {
             </Route>
           </Switch>
         </div>
+        <Footer />
       </Router>
     </>
   );

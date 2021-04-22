@@ -1,7 +1,8 @@
 import React, { useState, useContext, useEffect } from "react";
 import ReactModal from "react-modal";
 import styled from "styled-components";
-import { AppContext } from "./AppContext";
+import { AppContext } from "../AppContext";
+import back from "../assets/section9.png";
 
 const MessageModal = ({ open, setIsOpen, currentUser, currentItem }) => {
   const { appUser, appUserItems } = useContext(AppContext);
@@ -31,7 +32,7 @@ const MessageModal = ({ open, setIsOpen, currentUser, currentItem }) => {
           }}
         />
         <ButtonWrapper>
-          <button onClick={handleSendMessage}>Send Message</button>
+          <button onClick={handleSendMessage}>Send</button>
           <button
             onClick={() => {
               setIsOpen(false);
@@ -46,10 +47,11 @@ const MessageModal = ({ open, setIsOpen, currentUser, currentItem }) => {
 };
 
 const Modal = styled(ReactModal)`
-  background-color: #f0f8ff;
+  //background-color: #319365;
+
   position: absolute;
   width: 50%;
-  height: 20%;
+  height: 17%;
   outline: none;
   background: #fff;
   margin: auto;
@@ -58,36 +60,81 @@ const Modal = styled(ReactModal)`
   border-radius: 20px;
 `;
 const Form = styled.form`
-  background-color: #f0f8ff;
+  background-color: #319365;
+  background-image: url(${back});
   height: 100%;
   width: 100%;
+  font-family: "RocknRoll One", sans-serif;
+  font-size: 12pt;
   border-radius: 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  input {
-    width: 50%;
-    height: 20px;
-    margin: 10px;
-  }
+  color: #ffd800;
+  font-weight: 600;
+
   textarea {
     width: 50%;
+    height: 50%;
     margin: 10px;
-  }
-  select {
-    width: 50%;
-    margin: 10px;
-  }
-  button {
-    width: 20%;
     border-radius: 5px;
   }
+  button {
+    width: 30%;
+    border-radius: 5px;
+    display: inline-block;
+  }
 `;
-
 const ButtonWrapper = styled.div`
+  margin-top: 20px;
   width: 40%;
   display: flex;
   justify-content: space-around;
 `;
+
+// const Modal = styled(ReactModal)`
+//   background-color: #f0f8ff;
+//   position: absolute;
+//   width: 50%;
+//   height: 20%;
+//   outline: none;
+//   background: #fff;
+//   margin: auto;
+//   top: 30%;
+//   left: 30%;
+//   border-radius: 20px;
+// `;
+// const Form = styled.form`
+//   background-color: #f0f8ff;
+//   height: 100%;
+//   width: 100%;
+//   border-radius: 20px;
+//   display: flex;
+//   flex-direction: column;
+//   align-items: center;
+//   input {
+//     width: 50%;
+//     height: 20px;
+//     margin: 10px;
+//   }
+//   textarea {
+//     width: 50%;
+//     margin: 10px;
+//   }
+//   select {
+//     width: 50%;
+//     margin: 10px;
+//   }
+//   button {
+//     width: 20%;
+//     border-radius: 5px;
+//   }
+// `;
+
+// const ButtonWrapper = styled.div`
+//   width: 40%;
+//   display: flex;
+//   justify-content: space-around;
+// `;
 
 export default MessageModal;
