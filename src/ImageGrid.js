@@ -2,14 +2,11 @@ import React, { useEffect, useState, useContext } from "react";
 import styled from "styled-components";
 import { useHistory } from "react-router-dom";
 import { AppContext } from "./AppContext";
+import item_frame from "./assets/item_frame.png";
 
 const ImageGrid = ({ items, deleteFlag, setDeleteFlag, currentUser }) => {
   const { appUser } = useContext(AppContext);
   const history = useHistory();
-  const [updatedItems, setUpdatedItems] = useState(null);
-  useEffect(() => {
-    setUpdatedItems(items);
-  }, [items]);
 
   const handleDelete = (e, id) => {
     e.stopPropagation();
@@ -19,11 +16,11 @@ const ImageGrid = ({ items, deleteFlag, setDeleteFlag, currentUser }) => {
     });
     setDeleteFlag(!deleteFlag);
   };
+  console.log(items);
   return (
     <ImgWrapper className="img-grid">
-      {updatedItems &&
-        // items.length > 0 &&
-        updatedItems.map((item) => {
+      {items &&
+        items.map((item) => {
           return (
             <ItemWrapper
               key={item.id}
@@ -39,8 +36,10 @@ const ImageGrid = ({ items, deleteFlag, setDeleteFlag, currentUser }) => {
                   -
                 </button>
               )}
-              <Img src={item.url} alt="uploaded pic" />
+              <Img src={item.images[0].publicLink} alt="uploaded pic" />
               <div className="name">{item.name}</div>
+              <div className="category">Care level: {item.category}</div>
+              <div className="location">Montreal, {item.district}</div>
               {/* <div className="category">{item.category}</div> */}
             </ItemWrapper>
           );
@@ -50,17 +49,28 @@ const ImageGrid = ({ items, deleteFlag, setDeleteFlag, currentUser }) => {
 };
 
 const ImgWrapper = styled.div`
+  //min-width: 900px;
+  //min-height: 200px;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+  font-family: "Poppins", sans-serif;
+  font-weight: 600;
+  @media (max-width: 900px) {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
 `;
 const Img = styled.img`
   width: 200px;
   height: 200px;
+  border-radius: 0 0 20px 20px;
 `;
 const ItemWrapper = styled.div`
+  background-color: #62c785;
   display: flex;
-  flex: 0 0 23%;
+  flex: 0 0 24%;
   position: relative;
 
   flex-direction: column;
@@ -69,11 +79,17 @@ const ItemWrapper = styled.div`
   border-radius: 20px;
   margin: 20px;
   box-shadow: 2px 6px 24px -3px rgba(0, 0, 0, 0.53);
+  .name {
+    font-size: 14pt;
+  }
   .category {
     opacity: 60%;
     font-size: 10pt;
   }
-
+  .location {
+    font-size: 10pt;
+    opacity: 70%;
+  }
   .delete {
     position: absolute;
     background-color: red;

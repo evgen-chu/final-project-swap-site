@@ -29,16 +29,21 @@ const PageSelect = ({ page, setPage }) => {
 };
 
 const Wrapper = styled.div`
-  position: absolute;
-  bottom: -70px;
-  left: 50%;
-  transform: translate(-50%);
   display: flex;
   justify-content: space-between;
   align-items: center;
   width: 120px;
+  h3 {
+    margin-right: 10px;
+  }
   button {
     height: 20px;
+    border: none;
+    border-radius: 5px;
+    width: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 `;
 
