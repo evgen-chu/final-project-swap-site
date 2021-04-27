@@ -6,29 +6,9 @@ const useStorage = (file, submit, form, itemAdded, setItemAdded) => {
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState(null);
   const [url, setUrl] = useState(null);
-  const [id, setId] = useState(16);
-  //const id = uuid();
+  //const [id, setId] = useState(16);
+  const id = uuid();
   useEffect(() => {
-    // const storageRef = projectStorage.ref(file.name);
-    // const collectionRef = projectFirestore.collection("images");
-
-    // storageRef.put(file).on(
-    //   "state_changed",
-    //   (snap) => {
-    //     let percentage = (snap.bytesTransferred / snap.totalBytes) * 100;
-    //     setProgress(percentage);
-    //   },
-    //   (err) => {
-    //     setError(err);
-    //   },
-    //   async () => {
-    //     const url = await storageRef.getDownloadURL();
-    //     const createdAt = timestamp();
-    //     collectionRef.add({ url, createdAt });
-    //     //await collectionRef.doc(url).set(url);
-    //     setUrl(url);
-    //   }
-    // );
     if (file) {
       console.log(file);
       const formData = new FormData();
@@ -51,7 +31,7 @@ const useStorage = (file, submit, form, itemAdded, setItemAdded) => {
         setItemAdded(!itemAdded);
       });
 
-      setId(id + 1);
+      // setId(id + 1);
     }
   }, [submit]);
 

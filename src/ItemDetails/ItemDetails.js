@@ -64,7 +64,7 @@ const ItemDetails = () => {
               <div>{currentUser.displayName}</div>
               <div className="date"> Member since {currentUser.registered}</div>
               <div> Has made {currentUser.numOfSwaps} swaps</div>
-              {!(appUser.id === currentUser.id) && (
+              {appUser.id && !(appUser.id === currentUser.id) && (
                 <ButtonWrapper>
                   <button
                     className="offer"
@@ -130,10 +130,11 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  // background-image: url(${backg});
   background-color: #fca44e;
-  height: 90vh;
+  // height: 100vh;
+  //min-height: 250vh;
   @media (max-width: 900px) {
+    min-height: 250vh;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -193,6 +194,10 @@ const WrapperItem = styled.div`
     margin-top: 20px;
   }
   @media (max-width: 900px) {
+    position: absolute;
+    //width: 40%;
+    top: 60%;
+    left: 0%;
   }
 `;
 const WrapperUserInfo = styled.div`
@@ -219,8 +224,10 @@ const WrapperUserInfo = styled.div`
     margin: 5px;
   }
   @media (max-width: 900px) {
-    position: static;
+    position: absolute;
     width: 40%;
+    top: 20%;
+    left: 10%;
   }
 `;
 
@@ -262,7 +269,7 @@ const ImgPlants = styled.img`
   right: 20px;
   top: 50%;
   @media (max-width: 900px) {
-    top: 35%;
+    top: 20%;
     width: 40%;
     height: 40%;
   }

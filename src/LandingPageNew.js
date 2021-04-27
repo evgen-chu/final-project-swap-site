@@ -84,6 +84,7 @@ const ButtonWrapper = styled.div`
   button {
     background-color: #ffd800;
     border: 6px #6c757d solid;
+    border-radius: 5px;
     margin-top: 60px;
     width: 150px;
     height: 50px;
@@ -124,7 +125,7 @@ const AnimatedImg = styled.div`
   will-change: transform;
   width: 300px;
   height: 300px;
-  animation-duration: 35s;
+  animation-duration: 80s;
 `;
 
 export default LandingPageNew;

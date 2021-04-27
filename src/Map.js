@@ -24,9 +24,9 @@ const Map = ({
 }) => {
   const location = useLocation();
   const mapContainer = useRef();
-  const [lng, setLng] = useState(itemLng || items[0].location_lng || -73.56);
-  const [lat, setLat] = useState(itemLat || items[0].location_lat || 45.5);
-  const [zoom, setZoom] = useState(12);
+  const [lng, setLng] = useState(itemLng || -73.56);
+  const [lat, setLat] = useState(itemLat || 45.5);
+  const [zoom, setZoom] = useState(10);
   const [chosenLat, setChosenLat] = useState(null);
   const [chosenLon, setChosenLon] = useState(null);
 
@@ -96,6 +96,8 @@ const Map = ({
 };
 
 const Wrapper = styled.div`
+  position: static;
+  z-index: 10;
   width: 100%;
   height: 100%;
   .map-container {

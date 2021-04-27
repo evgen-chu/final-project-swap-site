@@ -2,7 +2,7 @@ import React, { createContext, useEffect, useState } from "react";
 import withFirebaseAuth from "react-with-firebase-auth";
 import firebase from "firebase";
 import "firebase/auth";
-
+import { useHistory } from "react-router-dom";
 var firebaseConfig = {
   apiKey: process.env.REACT_APP_APIKEY,
   authDomain: process.env.REACT_APP_AUTH_DOMAIN,
@@ -22,6 +22,7 @@ const providers = {
 export const AppContext = createContext(null);
 
 const AppProvider = ({ children, signInWithGoogle, user, signOut }) => {
+  const history = useHistory();
   const [appUser, setAppUser] = useState({});
   const [message, setMessage] = useState("");
   const [appUserItems, setAppUserItems] = useState(null);
@@ -29,6 +30,7 @@ const AppProvider = ({ children, signInWithGoogle, user, signOut }) => {
   const [offerStatusChanged, setOfferStatusChanged] = useState(false);
 
   const handleSignOut = () => {
+    //  history.push("/home");
     signOut();
     setAppUser({});
   };
@@ -70,7 +72,6 @@ const AppProvider = ({ children, signInWithGoogle, user, signOut }) => {
   useEffect(() => {
     console.log(appUser);
     if (appUser) {
-      console.log("i'm running!");
       fetch(`/offers/${appUser.id}`)
         .then((res) => res.json())
         .then((data) => {

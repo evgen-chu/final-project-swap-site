@@ -12,6 +12,7 @@ import topImg from "../assets/section6top.png";
 import bottomImg from "../assets/section6topr.png";
 import imgplant1 from "../assets/plant3.png";
 import imgplant2 from "../assets/aloe.png";
+import ProfilePageSelect from "./ProfilePageSelect";
 
 const Profile = () => {
   const { appUser, newOffers } = useContext(AppContext);
@@ -19,12 +20,11 @@ const Profile = () => {
   const [open, setOpen] = useState(false);
   const [userItems, setUserItems] = useState([]);
   const [currentUser, setCurrentUser] = useState();
-  const [status, setStatus] = useState("loading");
+  //const [status, setStatus] = useState("loading");
   const [statusUser, setStatusUser] = useState("loading");
   const [deleteFlag, setDeleteFlag] = useState(true);
   const [itemAdded, setItemAdded] = useState(true);
-
-  const [imgUrls, setImgUrls] = useState([]);
+  const [page, setPage] = React.useState(1);
 
   useEffect(() => {
     fetch(`/users/${userId}`)
@@ -36,45 +36,13 @@ const Profile = () => {
   }, [userId]);
 
   useEffect(() => {
-    fetch(`/users/${userId}/items`)
+    fetch(`/users/${userId}/items?page=${page}&limit=9`)
       .then((res) => res.json())
       .then((data) => {
         setUserItems(data.data);
       });
-  }, [currentUser, deleteFlag, itemAdded]);
+  }, [currentUser, deleteFlag, itemAdded, page]);
 
-  // const setItems = async () => {
-  //   if (userItems) {
-  //     console.log(userItems);
-  //     const tempUrls = [];
-
-  //     let promises = userItems.map((item) => {
-  //       return firebaseApp
-  //         .storage()
-  //         .ref(item.images[0].fileName)
-  //         .getDownloadURL();
-  //     });
-  //     await Promise.all(promises).then((results) => {
-  //       results.forEach((result, index) => {
-  //         const item = userItems[index];
-  //         tempUrls.push({
-  //           id: item.id,
-  //           url: result,
-  //           name: item.name,
-  //           category: item.category,
-  //         });
-  //       });
-  //     });
-  //     return tempUrls;
-  //   }
-  //   return [];
-  // };
-  // useEffect(async () => {
-  //   let tempUrls = await setItems();
-  //   console.log(tempUrls);
-  //   setImgUrls(tempUrls);
-  //   setStatus("idle");
-  // }, [userItems]);
   console.log(userItems);
   return (
     <Wrapper>
@@ -116,6 +84,7 @@ const Profile = () => {
           currentUser={currentUser}
         />
       </GridWrapper>
+      <ProfilePageSelect userId={userId} page={page} setPage={setPage} />
       <Section>
         <img src={bottomImg} />
       </Section>
@@ -129,11 +98,15 @@ const Wrapper = styled.div`
   display: flex;
   position: relative;
   background-color: #319365;
+  //height: 82vh;
   //background-color: #62c785;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   button {
+   // position: absolute;
+  //  top: 10%;
+    border: 2px solid 
     margin-top: 20px;
     border: none;
     border-radius: 5px;
@@ -178,10 +151,10 @@ const Section = styled.div`
 `;
 
 const GridWrapper = styled.div`
-  // position: absolute;
+  //position: absolute;
+  //top: 50%;
   width: 100%;
   background-image: url(${backImg});
-  margin-top: 20px;
   background-color: white;
 `;
 
@@ -211,9 +184,12 @@ const ImgPlant1 = styled.img`
 `;
 const ImgPlant2 = styled.img`
   position: absolute;
-  left: 30px;
-  top: 70%;
+  left: 10px;
+  top: 80%;
   width: 250px;
   height: 250px;
+  @media (max-width: 900px) {
+    top: 92%;
+  }
 `;
 export default Profile;

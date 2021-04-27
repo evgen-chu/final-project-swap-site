@@ -10,28 +10,50 @@ const OfferModal = ({ open, setIsOpen, currentUser, currentItem }) => {
   console.log("items:", appUserItems);
   const [offer, setOffer] = useState(null);
   const [message, setMessage] = useState(null);
+  const [userItems, setUserItems] = useState([]);
 
   console.log("currentUser", currentUser, "currentItem", currentItem);
 
+  useEffect(() => {
+    console.log("appUser", appUser);
+
+    fetch(`/users/${appUser.id}/items`)
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data.data);
+        setUserItems(data.data);
+      });
+  }, []);
+
   const handleSubmitOffer = () => {
+    console.log("I'm here!");
     const formData = new FormData();
-    console.log("appUSer ID:", appUser.id);
     formData.append("userBidder", appUser.id);
-    console.log("userOfferee ID:", currentUser.id);
     formData.append("userOfferee", currentUser.id);
-    console.log("itemBidderId ID:", offer);
-    formData.append("itemBidderId", offer);
-    console.log("itemOffereeId ID:", currentItem.id);
+    formData.append("offereeEmail", currentUser.email);
+    formData.append("itemBidderId", offer.id);
     formData.append("itemOffereeId", currentItem.id);
     formData.append("message", message);
-    console.log(formData);
     fetch("/offers/addOffer", {
       method: "POST",
-      // headers: { "Content-Type": "multipart/form-data" },
       body: formData,
     }).then((data) => console.log(data));
+
+    const formDataMail = new FormData();
+    formDataMail.append("emailRecipient", currentUser.email);
+    const messageToSend = `User ${appUser.displayName} ${appUser.email} wants to swap ${offer.name} on your ${currentItem.name}. Added message: "${message}". `;
+    formDataMail.append("message", messageToSend);
+    formDataMail.append("emailSender", appUser.email);
+    formDataMail.append("nameSender", appUser.displayName);
+
+    fetch("/sendMail", {
+      method: "POST",
+      body: formDataMail,
+    }).then((data) => console.log(data));
+
     setIsOpen(false);
   };
+
   return (
     <Modal isOpen={open}>
       <Form>
@@ -39,11 +61,12 @@ const OfferModal = ({ open, setIsOpen, currentUser, currentItem }) => {
           placeholder="Choose item to offer"
           onChange={(e) => {
             console.log(e.target.value);
-            setOffer(e.target.value);
+            // setOffer(appUserItems[e.target.value]);
+            setOffer(userItems[e.target.value]);
           }}
         >
           <option>Select item to offer</option>
-          {appUserItems.map((item) => {
+          {userItems.map((item) => {
             return <option value={item.id}>{item.name}</option>;
           })}
         </select>
@@ -55,13 +78,7 @@ const OfferModal = ({ open, setIsOpen, currentUser, currentItem }) => {
         />
         <ButtonWrapper>
           <button onClick={handleSubmitOffer}>Offer</button>
-          <button
-            onClick={() => {
-              setIsOpen(false);
-            }}
-          >
-            Cancel
-          </button>
+          <button onClick={() => setIsOpen(false)}>Cancel</button>
         </ButtonWrapper>
       </Form>
     </Modal>
