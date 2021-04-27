@@ -16,16 +16,12 @@ import Map from "../Map";
 
 const LandingPage = () => {
   const [items, setItems] = useState([]);
-  const [imgUrls, setImgUrls] = useState([]);
   const [page, setPage] = React.useState(1);
   const [searchApplied, setSearchApplied] = useState(false);
   const [deleteSearchTerm, setDeleteSearchTerm] = useState(false);
   const [searchItem, setSearchItem] = useState("");
   const [openMap, setOpenMap] = useState(false);
 
-  const componentDidMount = () => {
-    setSearchItem("");
-  };
   useEffect(() => {
     fetch(`/getitems?page=${page}&limit=9`)
       .then((res) => res.json())
@@ -39,38 +35,6 @@ const LandingPage = () => {
     setOpenMap(true);
   };
 
-  ///===========================
-  // const setItems1 = async () => {
-  //   if (items) {
-  //     console.log(items);
-  //     const tempUrls = [];
-
-  //     let promises = items.map((item) => {
-  //       return firebaseApp
-  //         .storage()
-  //         .ref(item.images[0].fileName)
-  //         .getDownloadURL();
-  //     });
-  //     await Promise.all(promises).then((results) => {
-  //       results.forEach((result, index) => {
-  //         const item = items[index];
-  //         tempUrls.push({
-  //           id: item.id,
-  //           url: result,
-  //           name: item.name,
-  //           category: item.category,
-  //         });
-  //       });
-  //     });
-  //     return tempUrls;
-  //   }
-  //   return [];
-  // };
-  // useEffect(async () => {
-  //   let tempUrls = await setItems1();
-  //   console.log(tempUrls);
-  //   setImgUrls(tempUrls);
-  // }, [items]);
   return (
     <Wrapper>
       <Banner>
@@ -133,7 +97,6 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-
   background-color: #319365;
 `;
 const Banner = styled.div`
@@ -143,7 +106,7 @@ const Banner = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1;
+  //z-index: 1;
   @media (max-width: 900px) {
     width: 100%;
     height: 400px;
@@ -193,7 +156,7 @@ const Input = styled.input`
 `;
 const WrapperItemSection = styled.div`
   background-color: #319365;
-  min-width: 70%;
+  //min-width: 70%;
   .search-title {
     font-size: 14pt;
     margin: 40px;
@@ -221,16 +184,17 @@ const WrapperItemSection = styled.div`
 `;
 const Modal = styled(ReactModal)`
   position: absolute;
-  width: 60%;
-  height: 30%;
+  width: 50%;
+  height: 20%;
   outline: none;
   background: #fff;
   margin: auto;
   top: 30%;
   left: 30%;
   border-radius: 20px;
-  z-index: 5;
+  z-index: 10;
   .close-btn {
+    margin-top: 30px;
     border-radius: 5px;
     width: 60px;
   }

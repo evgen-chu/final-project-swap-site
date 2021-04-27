@@ -14,21 +14,10 @@ const Offers = () => {
   const {
     appUser,
     newOffers,
-    setNewOffers,
     offerStatusChanged,
     setOfferStatusChanged,
   } = useContext(AppContext);
-  const [bidderUser, setBidderUser] = useState(null);
-  // const [offersInfo, setOffersInfo] = useState([]);
   console.log("New offers:", newOffers);
-  // useEffect(() => {
-  //   fetch(`/offers/${appUser.id}`)
-  //     .then((res) => res.json())
-  //     .then((data) => {
-  //       console.log(data.data);
-  //       setNewOffers(data.data);
-  //     });
-  // }, [offerStatusChanged]);
 
   const handleAcceptSwap = (offer) => {
     //to change status of offer to "accepted"
@@ -56,7 +45,20 @@ const Offers = () => {
         console.log(data);
         setOfferStatusChanged(!offerStatusChanged);
       });
+
+    const formDataMail = new FormData();
+    formDataMail.append("emailRecipient", offer.user_offeree_email);
+    const messageToSend = `User ${appUser.id} ${appUser.email} accepted your offer.`;
+    formDataMail.append("message", messageToSend);
+    formDataMail.append("emailSender", appUser.email);
+    formDataMail.append("nameSender", appUser.displayName);
+
+    fetch("/sendMail", {
+      method: "POST",
+      body: formDataMail,
+    }).then((data) => console.log(data));
   };
+
   const handleRejectSwap = (offer) => {
     //change status of offer to rejected
     const formData = new FormData();
@@ -69,6 +71,18 @@ const Offers = () => {
     }).then((data) => {
       setOfferStatusChanged(!offerStatusChanged);
     });
+
+    const formDataMail = new FormData();
+    formDataMail.append("emailRecipient", appUser.email);
+    const messageToSend = `User ${appUser.displayName} ${appUser.email} rejected your offer.`;
+    formDataMail.append("message", messageToSend);
+    formDataMail.append("emailSender", appUser.email);
+    formDataMail.append("nameSender", appUser.displayName);
+
+    fetch("/sendMail", {
+      method: "POST",
+      body: formDataMail,
+    }).then((data) => console.log(data));
   };
 
   return (
@@ -79,6 +93,7 @@ const Offers = () => {
       </SectionTop>
       {newOffers.length !== 0
         ? newOffers.map((offer) => {
+            console.log(offer);
             console.log("MESSAGE:", offer.userBidder.message);
             return (
               <OfferWrapper>
@@ -91,14 +106,6 @@ const Offers = () => {
                       </div>
                       <Message className="message">{offer.message}</Message>
                     </MessageWrapper>
-
-                    {/* <div>
-                    <div>{offer.userBidder.displayName}</div>
-                    <div className="date">
-                      Member since {offer.userBidder.registered}
-                    </div>
-                    <div> Has made {offer.userBidder.numOfSwaps} swaps</div>
-                  </div> */}
                   </WrapperUserInfo>
 
                   <ItemWrapper to={`/items/${offer.itemBidder.id}`}>
@@ -113,7 +120,7 @@ const Offers = () => {
                         {offer.itemBidder.description}
                       </div>
                       <div className="category">
-                        {offer.itemBidder.category}
+                        Care level: {offer.itemBidder.category}
                       </div>
                     </DescriptionWrapper>
                   </ItemWrapper>
@@ -134,7 +141,7 @@ const Offers = () => {
                 </ButtonWrapper>
 
                 <AppUserWrapper>
-                  <ImgWrapper>
+                  <ImgWrapper to={`/items/${offer.itemOfferee.id}`}>
                     <ItemImg src={offer.itemOfferee.mediaLink} />
                   </ImgWrapper>
                   <div className="name">{offer.itemOfferee.name}</div>
@@ -142,7 +149,9 @@ const Offers = () => {
                   {/* <div className="description">
                   {offer.itemOfferee.description}
                 </div> */}
-                  <div className="category">{offer.itemOfferee.category}</div>
+                  <div className="category">
+                    Care level: {offer.itemOfferee.category}
+                  </div>
                 </AppUserWrapper>
               </OfferWrapper>
             );
@@ -158,7 +167,8 @@ const Offers = () => {
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
-  height: 91vh;
+  //height: 91vh
+  height: 100vh;
 `;
 const SectionTop = styled.div`
   height: 100px;
@@ -179,7 +189,7 @@ const SectionBottom = styled.div`
 `;
 const OfferWrapper = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
   background-color: #fca44e;
   margin: 0;
 `;
@@ -206,15 +216,21 @@ const BidderWrapper = styled.div`
     font-size: 14pt;
     margin-top: 20px;
   }
+  @media (max-width: 900px) {
+    font-size: 12pt;
+    height: 300px;
+    align-items: center;
+  }
 `;
 const AppUserWrapper = styled.div`
   display: flex;
   margin: 20px;
   flex-direction: column;
+  align-items: center;
   background-color: #319365;
   background-image: url(${back});
-  width: 40%;
-  height: 500px;
+  width: 20%;
+  height: 400px;
   border-radius: 20px;
   padding: 20px;
   .name {
@@ -230,11 +246,22 @@ const AppUserWrapper = styled.div`
     font-size: 14pt;
     margin-top: 20px;
   }
+  @media (max-width: 900px) {
+    font-size: 12pt;
+    height: 300px;
+    .category {
+      visibility: hidden;
+    }
+  }
 `;
 const StyledAvatar = styled.img`
   border-radius: 50%;
   height: 100px;
   width: 100px;
+  @media (max-width: 900px) {
+    height: 50px;
+    width: 50px;
+  }
 `;
 const WrapperUserInfo = styled.div`
   display: flex;
@@ -255,13 +282,17 @@ const WrapperUserInfo = styled.div`
   }
 `;
 const ItemImg = styled.img`
-  min-width: 200px;
-  max-height: 300px;
+  width: 200px;
+  height: 300px;
   border-radius: 20px;
-  margin: 20px;
+  margin-right: 20px;
+  @media (max-width: 900px) {
+    width: 100px;
+    height: 200px;
+  }
 `;
 
-const ImgWrapper = styled.div`
+const ImgWrapper = styled(Link)`
   margin: auto;
   margin-top: 20px;
   width: 200px;
@@ -311,6 +342,10 @@ const MessageWrapper = styled(Link)`
     display: flex;
     flex-direction: column;
   }
+  @media (max-width: 900px) {
+    font-size: 12pt;
+    width: 200px;
+  }
 `;
 const Message = styled.div`
   background-color: #e9e9eb;
@@ -327,6 +362,17 @@ const ItemWrapper = styled(Link)`
   display: flex;
   text-decoration: none;
   color: #414042;
+
+  justify-content: space-between;
+  @media (max-width: 900px) {
+    .description {
+      visibility: hidden;
+    }
+    display: flex;
+    flex-direction: column;
+    width: 20%;
+    height: 400px;
+  }
 `;
 
 export default Offers;

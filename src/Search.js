@@ -47,7 +47,7 @@ const Search = ({
 
   return (
     <div>
-      <Wrapper>
+      <Wrapper location={location}>
         <Input
           id="search"
           type="text"
@@ -132,8 +132,10 @@ const Wrapper = styled.div`
   display: flex;
   @media (max-width: 900px) {
     position: absolute;
-    top: 70px;
-    left: 0;
+    //top: 420px;
+    left: 120px;
+    top: ${(props) =>
+      props.location.pathname === "/home" ? "420px" : "100px"};
   }
 `;
 const Input = styled.input`
@@ -170,6 +172,10 @@ const SuggestionWrapper = styled.div`
   overflow-x: hidden;
   visibility: ${(props) => (props.visible ? "visible" : "hidden")};
   z-index: 5;
+  @media (max-width: 900px) {
+    left: 120px;
+    top: 455px;
+  }
 `;
 const Suggestion = styled.li`
   padding: 3px;

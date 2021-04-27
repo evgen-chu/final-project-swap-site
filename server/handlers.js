@@ -73,6 +73,7 @@ const getUserById = async (req, res) => {
 //GET all items of the user with specified id
 const getItemsByUserId = async (req, res) => {
   const id = req.params.userId;
+
   const db = firebase.firestore();
   const docRef = db.collection("items");
   //const doc = await
@@ -87,7 +88,7 @@ const getItemsByUserId = async (req, res) => {
         //console.log(doc.id, " => ", doc.data());
         temp.push({ ...doc.data(), id: doc.id });
       });
-      sendResponse(res, 200, temp);
+      sendResponse(res, 200, paginatedResults(req, temp));
     })
     .catch((error) => {
       console.log("Error getting documents: ", error);
@@ -240,8 +241,10 @@ const createOffer = (req, res) => {
 
   const createdAt = Date.now();
   offer.set({
+    _id: id,
     user_bidder_id: req.body.userBidder,
     user_offeree_id: req.body.userOfferee,
+    user_offeree_email: req.body.offereeEmail,
     item_bidder_id: req.body.itemBidderId,
     item_offeree_id: req.body.itemOffereeId,
     message: req.body.message,
