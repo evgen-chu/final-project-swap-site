@@ -2,7 +2,6 @@ import React, { createContext, useEffect, useState } from "react";
 import withFirebaseAuth from "react-with-firebase-auth";
 import firebase from "firebase";
 import "firebase/auth";
-import { useHistory } from "react-router-dom";
 var firebaseConfig = {
   apiKey: process.env.REACT_APP_APIKEY,
   authDomain: process.env.REACT_APP_AUTH_DOMAIN,
@@ -22,7 +21,6 @@ const providers = {
 export const AppContext = createContext(null);
 
 const AppProvider = ({ children, signInWithGoogle, user, signOut }) => {
-  const history = useHistory();
   const [appUser, setAppUser] = useState({});
   const [message, setMessage] = useState("");
   const [appUserItems, setAppUserItems] = useState(null);
@@ -30,14 +28,12 @@ const AppProvider = ({ children, signInWithGoogle, user, signOut }) => {
   const [offerStatusChanged, setOfferStatusChanged] = useState(false);
 
   const handleSignOut = () => {
-    //  history.push("/home");
     signOut();
     setAppUser({});
   };
 
   useEffect(() => {
     if (user) {
-      console.log(user);
       fetch(`/users`, {
         method: "post",
         headers: {
@@ -51,7 +47,6 @@ const AppProvider = ({ children, signInWithGoogle, user, signOut }) => {
       })
         .then((res) => res.json())
         .then((json) => {
-          console.log(json);
           setAppUser(json.data);
           setMessage(json.message);
         });
@@ -59,23 +54,18 @@ const AppProvider = ({ children, signInWithGoogle, user, signOut }) => {
   }, [user]);
 
   useEffect(() => {
-    console.log("appUser", appUser);
-
     fetch(`/users/${appUser.id}/items`)
       .then((res) => res.json())
       .then((data) => {
-        console.log(data.data);
         setAppUserItems(data.data);
       });
   }, [appUser]);
 
   useEffect(() => {
-    console.log(appUser);
-    if (appUser) {
+    if (appUser && appUser.id) {
       fetch(`/offers/${appUser.id}`)
         .then((res) => res.json())
         .then((data) => {
-          console.log(data.data);
           setNewOffers(data.data);
         })
         .catch((error) => {
@@ -83,7 +73,6 @@ const AppProvider = ({ children, signInWithGoogle, user, signOut }) => {
         });
     }
   }, [appUser, offerStatusChanged]);
-  console.log("context", newOffers);
   return (
     <AppContext.Provider
       value={{

@@ -3,9 +3,6 @@ import { AppContext } from "../AppContext";
 import { v4 as uuid } from "uuid";
 const useStorage = (file, submit, form, itemAdded, setItemAdded) => {
   const { appUser } = useContext(AppContext);
-  const [progress, setProgress] = useState(0);
-  const [error, setError] = useState(null);
-  const [url, setUrl] = useState(null);
   //const [id, setId] = useState(16);
   const id = uuid();
   useEffect(() => {
@@ -24,7 +21,6 @@ const useStorage = (file, submit, form, itemAdded, setItemAdded) => {
       formData.append("productUser", appUser.id);
       fetch("/items/addItem", {
         method: "POST",
-        // headers: { "Content-Type": "multipart/form-data" },
         body: formData,
       }).then((data) => {
         console.log(data);
@@ -35,7 +31,7 @@ const useStorage = (file, submit, form, itemAdded, setItemAdded) => {
     }
   }, [submit]);
 
-  return { progress, url, error };
+  return { id };
 };
 
 export default useStorage;

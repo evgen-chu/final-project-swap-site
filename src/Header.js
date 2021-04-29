@@ -1,38 +1,27 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import styled from "styled-components";
-import { NavLink, Link, useHistory, useLocation } from "react-router-dom";
-
+import { Link, useHistory, useLocation } from "react-router-dom";
 import { AppContext } from "./AppContext";
 import Avatar from "./Avatar";
-import { AiOutlineInteraction } from "react-icons/ai";
-import flower from "./assets/flower.svg";
-import { GiFlowerPot } from "react-icons/gi";
 import Search from "./Search";
 import plant4 from "./assets/topplant-3.svg";
 
 const Header = () => {
   const [searchItem, setSearchItem] = useState("");
 
-  const {
-    appUser,
-    newOffers,
-    signInWithGoogle,
-    handleSignOut,
-    message,
-  } = useContext(AppContext);
+  const { appUser, newOffers, signInWithGoogle, handleSignOut } = useContext(
+    AppContext
+  );
 
   const history = useHistory();
   const location = useLocation();
 
-  console.log(location);
-  // console.log(newOffers);
   return (
     <>
       {location.pathname !== "/" && (
         <Wrapper>
           <Logo to="/home">
             PlantSwap
-            {/* <FlowerIcon />{" "} */}
             <ImgIcon src={plant4} />
           </Logo>
           {location.pathname !== "/" && location.pathname !== "/home" && (
@@ -55,10 +44,6 @@ const Header = () => {
                   <AvatarWrapper to={`/profile/${appUser.id}`}>
                     <Avatar src={appUser.photoURL} />
                   </AvatarWrapper>
-                  {/* <p>
-                {appUser.displayName}
-               ({appUser.email}) 
-              </p> */}
                 </StyledUserContainer>
                 <Button onClick={handleSignOut}>Sign Out</Button>{" "}
               </>

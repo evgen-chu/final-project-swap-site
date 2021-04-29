@@ -6,19 +6,20 @@ import plant3 from "./assets/topplant-3.svg";
 import plant4 from "./assets/topplant-4.svg";
 import plant5 from "./assets/topplant-5.svg";
 import { useHistory } from "react-router-dom";
-const LandingPageNew = () => {
+
+const LandingPage = () => {
   const history = useHistory();
   return (
     <Wrapper>
       <PlantsWrapper>
         <AnimatedImg className="plant-1">
-          <img src={plant1} />
+          <img alt="" src={plant1} />
         </AnimatedImg>
         <AnimatedImg className="plant-2">
-          <img src={plant2} />
+          <img alt="" src={plant2} />
         </AnimatedImg>
         <AnimatedImg className="plant-3">
-          <img src={plant3} />
+          <img alt="" src={plant3} />
         </AnimatedImg>
       </PlantsWrapper>
       <ButtonWrapper>
@@ -37,10 +38,10 @@ const LandingPageNew = () => {
 
       <PlantsWrapper>
         <AnimatedImg className="plant-4">
-          <img src={plant4} />
+          <img alt="" src={plant4} />
         </AnimatedImg>
         <AnimatedImg className="plant-5">
-          <img src={plant5} />
+          <img alt="" src={plant5} />
         </AnimatedImg>
       </PlantsWrapper>
     </Wrapper>
@@ -49,11 +50,11 @@ const LandingPageNew = () => {
 
 const Wrapper = styled.div`
   height: 100vh;
-  background-color: #ffd800;
+  background-color: var(--yellow-color);
   display: flex;
   flex-direction: column;
   justify-content: space-around;
-  color: #414042;
+  //color: #414042;
   .plant-1 {
     margin-top: 200px;
   }
@@ -70,25 +71,25 @@ const Wrapper = styled.div`
     margin-bottom: 200px;
   }
   span {
-    font-family: "RocknRoll One", sans-serif;
+    font-family: var(--heading-font-family);
   }
 `;
 const ButtonWrapper = styled.div`
   margin: auto;
   font-size: 40pt;
-  font-family: "Poppins", sans-serif;
+  font-family: var(--general-font-family);
   display: flex;
   flex-direction: column;
   align-items: center;
   font-weight: 600;
   button {
-    background-color: #ffd800;
+    background-color: var(--yellow-color);
     border: 6px #6c757d solid;
     border-radius: 5px;
     margin-top: 60px;
     width: 150px;
     height: 50px;
-    font-family: "RocknRoll One", sans-serif;
+    font-family: var(--heading-font-family);
     font-size: 18pt;
     display: flex;
     align-items: center;
@@ -99,8 +100,6 @@ const PlantsWrapper = styled.div`
   display: flex;
   justify-content: space-around;
 `;
-
-const Img = styled.img``;
 
 const fullRotate = keyframes`
 0% {
@@ -128,4 +127,4 @@ const AnimatedImg = styled.div`
   animation-duration: 80s;
 `;
 
-export default LandingPageNew;
+export default LandingPage;

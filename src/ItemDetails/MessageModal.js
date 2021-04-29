@@ -1,11 +1,11 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext } from "react";
 import ReactModal from "react-modal";
 import styled from "styled-components";
 import { AppContext } from "../AppContext";
 import back from "../assets/section9.png";
 
-const MessageModal = ({ open, setIsOpen, currentUser, currentItem }) => {
-  const { appUser, appUserItems } = useContext(AppContext);
+const MessageModal = ({ open, setIsOpen, currentUser }) => {
+  const { appUser } = useContext(AppContext);
   const [message, setMessage] = useState(null);
 
   const handleSendMessage = () => {
@@ -17,7 +17,6 @@ const MessageModal = ({ open, setIsOpen, currentUser, currentItem }) => {
 
     fetch("/sendMail", {
       method: "POST",
-      // headers: { "Content-Type": "multipart/form-data" },
       body: formData,
     }).then((data) => console.log(data));
     setIsOpen(false);
@@ -47,8 +46,6 @@ const MessageModal = ({ open, setIsOpen, currentUser, currentItem }) => {
 };
 
 const Modal = styled(ReactModal)`
-  //background-color: #319365;
-
   position: absolute;
   width: 50%;
   height: 17%;

@@ -4,7 +4,6 @@ import styled from "styled-components";
 import useStorage from "../hooks/useStorage";
 import Map from "../Map";
 import back from "../assets/section9.png";
-import plantSection from "../assets/raisedplant1.png";
 
 const UploadModal = ({ isOpen, setOpen, itemAdded, setItemAdded }) => {
   const [file, setFile] = useState(null);
@@ -22,7 +21,7 @@ const UploadModal = ({ isOpen, setOpen, itemAdded, setItemAdded }) => {
 
   const types = ["image/png", "image/jpeg"];
   const categories = ["Easy", "Intermidiate", "Expert"];
-  const { url } = useStorage(file, submit, form, itemAdded, setItemAdded);
+  const { id } = useStorage(file, submit, form, itemAdded, setItemAdded);
   const changeHandler = (e) => {
     let selected = e.target.files[0];
 
@@ -111,9 +110,6 @@ const UploadModal = ({ isOpen, setOpen, itemAdded, setItemAdded }) => {
           </button>
         </ButtonWrapper>
       </Form>
-      {/* <PlantSection>
-        <Img src={plantSection} />
-      </PlantSection> */}
     </Modal>
   );
 };
@@ -181,9 +177,4 @@ const MapWrapper = styled.div`
   width: 100%;
 `;
 
-const PlantSection = styled.div``;
-const Img = styled.img`
-  width: 200px;
-  height: 200px;
-`;
 export default UploadModal;
