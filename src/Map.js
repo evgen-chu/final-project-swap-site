@@ -1,13 +1,10 @@
 /* eslint import/no-webpack-loader-syntax: off */
 
 import React, { useRef, useEffect, useState } from "react";
-import ReactDOM from "react-dom";
 import styled from "styled-components";
 import { useLocation } from "react-router-dom";
-
 import mapboxgl from "mapbox-gl/dist/mapbox-gl-csp";
 import MapboxWorker from "worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker";
-import plantIcon from "./assets/plant-icon.webp";
 import plantIcon2 from "./assets/plant2c2.svg";
 
 mapboxgl.workerClass = MapboxWorker;
@@ -30,7 +27,6 @@ const Map = ({
   const [chosenLat, setChosenLat] = useState(null);
   const [chosenLon, setChosenLon] = useState(null);
 
-  console.log(location);
   useEffect(() => {
     const map = new mapboxgl.Map({
       container: mapContainer.current,
@@ -51,13 +47,11 @@ const Map = ({
         .addTo(map);
     };
     if (itemLat && itemLng) {
-      console.log(itemLat, itemLng);
       var el = document.createElement("div");
       el.className = "marker";
       new mapboxgl.Marker(el).setLngLat([itemLng, itemLat]).addTo(map);
     }
     if (location.pathname.includes("profile")) {
-      console.log("I'm in the form");
       map.on("click", createMarker);
     } else {
       map.off("click", createMarker);
@@ -79,7 +73,6 @@ const Map = ({
   }, []);
 
   const handleClick = (e) => {
-    console.log(setForm);
     setForm({
       ...form,
       location_lat: chosenLat,

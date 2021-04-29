@@ -1,13 +1,13 @@
-import React, { useEffect, useContext, useState } from "react";
+import React, { useContext } from "react";
 import styled from "styled-components";
 import { AppContext } from "./AppContext";
-import tipSent from "./assets/tip-sent.svg";
 import tipRecieved from "./assets/tip-received.svg";
 import { useHistory } from "react-router-dom";
 import back from "./assets/section9.png";
 import top from "./assets/section7top.png";
 import bottom from "./assets/section11top.png";
 import { Link } from "react-router-dom";
+import { v4 as uuid } from "uuid";
 
 const Offers = () => {
   const history = useHistory();
@@ -37,7 +37,6 @@ const Offers = () => {
     formData.append("status", status);
     fetch(`/updateInfo/${offer._id}`, {
       method: "PUT",
-      // headers: { "Content-Type": "multipart/form-data" },
       body: formData,
     })
       .then((res) => res.json())
@@ -66,7 +65,6 @@ const Offers = () => {
     formData.append("status", status);
     fetch(`/updateInfo/${offer._id}`, {
       method: "PUT",
-      // headers: { "Content-Type": "multipart/form-data" },
       body: formData,
     }).then((data) => {
       setOfferStatusChanged(!offerStatusChanged);
@@ -88,21 +86,17 @@ const Offers = () => {
   return (
     <Wrapper>
       <SectionTop>
-        {" "}
-        <img src={top} />
+        <img alt="" src={top} />
       </SectionTop>
       {newOffers.length !== 0
         ? newOffers.map((offer) => {
-            console.log(offer);
-            console.log("MESSAGE:", offer.userBidder.message);
             return (
-              <OfferWrapper>
+              <OfferWrapper key={uuid()}>
                 <BidderWrapper>
                   <WrapperUserInfo>
                     <MessageWrapper to={`/profile/${offer.userBidder.id}`}>
                       <div className="user-avatar">
                         <StyledAvatar src={offer.userBidder.photoURL} />
-                        {/* {offer.userBidder.displayName} */}
                       </div>
                       <Message className="message">{offer.message}</Message>
                     </MessageWrapper>
@@ -146,9 +140,6 @@ const Offers = () => {
                   </ImgWrapper>
                   <div className="name">{offer.itemOfferee.name}</div>
                   <div className="location"> {offer.itemOfferee.location}</div>
-                  {/* <div className="description">
-                  {offer.itemOfferee.description}
-                </div> */}
                   <div className="category">
                     Care level: {offer.itemOfferee.category}
                   </div>
@@ -158,7 +149,7 @@ const Offers = () => {
           })
         : history.push(`/profile/${appUser.id}`)}
       <SectionBottom>
-        <img src={bottom} />
+        <img alt="" src={bottom} />
       </SectionBottom>
     </Wrapper>
   );
@@ -330,6 +321,7 @@ const MessageWrapper = styled(Link)`
     margin: 20px;
     color: black;
     font-size: 16pt;
+    width: 300px;
   }
   .message::before {
     content: url(${tipRecieved});

@@ -1,15 +1,11 @@
 import React, { useEffect, useState, useContext } from "react";
 import styled from "styled-components";
-import imgItem from "../assets/1.jpg";
 import { useParams, Link } from "react-router-dom";
 import { firebaseApp } from "../AppContext";
 import OfferModal from "./OfferModal";
 import Map from "../Map";
 import MessageModal from "./MessageModal";
-import frame from "../assets/section4.gif";
-import backg from "../assets/section14.png";
 import top from "../assets/section7top.png";
-import backg2 from "../assets/section14r.png";
 import bottom from "../assets/section6topr.png";
 import moreplants from "../assets/moreplants.png";
 import { AppContext } from "../AppContext";
@@ -23,11 +19,9 @@ const ItemDetails = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [openMessage, setOpenMessage] = useState(false);
   useEffect(() => {
-    console.log(itemId);
     fetch(`/items/${itemId}`)
       .then((res) => res.json())
       .then((data) => {
-        console.log(data.data);
         setCurrentItem(data.data);
       });
   }, [itemId]);
@@ -37,7 +31,6 @@ const ItemDetails = () => {
       fetch(`/users/${currentItem.user}`)
         .then((res) => res.json())
         .then((data) => {
-          console.log(data.data);
           setCurrentUser(data.data);
         });
   }, [currentItem]);
@@ -53,7 +46,7 @@ const ItemDetails = () => {
     currentItem && (
       <Wrapper>
         <SectionTop>
-          <img src={top} />
+          <img alt="" src={top} />
         </SectionTop>
         {currentUser && (
           <WrapperUserInfo>
@@ -117,7 +110,7 @@ const ItemDetails = () => {
           />
         </WrapperItem>
         <SectionBottom>
-          <img src={bottom} />
+          <img alt="" src={bottom} />
         </SectionBottom>
 
         <ImgPlants src={moreplants} />
@@ -132,7 +125,7 @@ const Wrapper = styled.div`
   justify-content: flex-start;
   background-color: #fca44e;
   // height: 100vh;
-  //min-height: 250vh;
+  min-height: 91vh;
   @media (max-width: 900px) {
     min-height: 250vh;
     display: flex;

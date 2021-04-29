@@ -1,8 +1,7 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useContext } from "react";
 import styled from "styled-components";
 import { useHistory } from "react-router-dom";
 import { AppContext } from "./AppContext";
-import item_frame from "./assets/item_frame.png";
 
 const ImageGrid = ({ items, deleteFlag, setDeleteFlag, currentUser }) => {
   const { appUser } = useContext(AppContext);
@@ -10,13 +9,11 @@ const ImageGrid = ({ items, deleteFlag, setDeleteFlag, currentUser }) => {
 
   const handleDelete = (e, id) => {
     e.stopPropagation();
-    console.log("Delete this item!");
     fetch(`/items/${id}/delete`, { method: "DELETE" }).then((res) => {
       console.log(res);
     });
     setDeleteFlag(!deleteFlag);
   };
-  console.log(items);
   return (
     <ImgWrapper className="img-grid">
       {items &&
@@ -40,7 +37,6 @@ const ImageGrid = ({ items, deleteFlag, setDeleteFlag, currentUser }) => {
               <div className="name">{item.name}</div>
               <div className="category">Care level: {item.category}</div>
               <div className="location">Montreal, {item.district}</div>
-              {/* <div className="category">{item.category}</div> */}
             </ItemWrapper>
           );
         })}

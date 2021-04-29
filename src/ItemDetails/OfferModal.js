@@ -5,28 +5,20 @@ import { AppContext } from "../AppContext";
 import back from "../assets/section9.png";
 
 const OfferModal = ({ open, setIsOpen, currentUser, currentItem }) => {
-  const { appUser, appUserItems } = useContext(AppContext);
-  console.log(appUser);
-  console.log("items:", appUserItems);
+  const { appUser } = useContext(AppContext);
   const [offer, setOffer] = useState(null);
   const [message, setMessage] = useState(null);
   const [userItems, setUserItems] = useState([]);
 
-  console.log("currentUser", currentUser, "currentItem", currentItem);
-
   useEffect(() => {
-    console.log("appUser", appUser);
-
     fetch(`/users/${appUser.id}/items`)
       .then((res) => res.json())
       .then((data) => {
-        console.log(data.data);
         setUserItems(data.data);
       });
-  }, []);
+  }, [appUser.id]);
 
   const handleSubmitOffer = () => {
-    console.log("I'm here!");
     const formData = new FormData();
     formData.append("userBidder", appUser.id);
     formData.append("userOfferee", currentUser.id);
@@ -60,8 +52,6 @@ const OfferModal = ({ open, setIsOpen, currentUser, currentItem }) => {
         <select
           placeholder="Choose item to offer"
           onChange={(e) => {
-            console.log(e.target.value);
-            // setOffer(appUserItems[e.target.value]);
             setOffer(userItems[e.target.value]);
           }}
         >
@@ -85,50 +75,6 @@ const OfferModal = ({ open, setIsOpen, currentUser, currentItem }) => {
   );
 };
 
-// const Modal = styled(ReactModal)`
-//   background-color: #f0f8ff;
-//   position: absolute;
-//   width: 50%;
-//   height: 20%;
-//   outline: none;
-//   background: #fff;
-//   margin: auto;
-//   top: 30%;
-//   left: 30%;
-//   border-radius: 20px;
-// `;
-// const Form = styled.form`
-//   background-color: #f0f8ff;
-//   height: 100%;
-//   width: 100%;
-//   border-radius: 20px;
-//   display: flex;
-//   flex-direction: column;
-//   align-items: center;
-//   input {
-//     width: 50%;
-//     height: 20px;
-//     margin: 10px;
-//   }
-//   textarea {
-//     width: 50%;
-//     margin: 10px;
-//   }
-//   select {
-//     width: 50%;
-//     margin: 10px;
-//   }
-//   button {
-//     width: 20%;
-//     border-radius: 5px;
-//   }
-// `;
-
-// const ButtonWrapper = styled.div`
-//   width: 40%;
-//   display: flex;
-//   justify-content: space-around;
-// `;
 const Modal = styled(ReactModal)`
   //background-color: #319365;
 

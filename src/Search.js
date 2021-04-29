@@ -34,9 +34,7 @@ const Search = ({
   }, []);
 
   useEffect(() => {
-    console.log(searchItem);
     if (searchItem && searchItem.length > 2) {
-      console.log("in search");
       fetch(`/searchItem/${searchItem}`)
         .then((res) => res.json())
         .then((data) => {
@@ -167,7 +165,7 @@ const SuggestionWrapper = styled.div`
   border: 1px solid rgba(0, 0, 0, 0.2);
   border-radius: 8px;
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
-  height: 100px;
+  height: 120px;
   overflow: scroll;
   overflow-x: hidden;
   visibility: ${(props) => (props.visible ? "visible" : "hidden")};

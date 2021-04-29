@@ -1,20 +1,15 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import plantExchange from "../assets/plant-exchange.jpg";
-import banner_lp from "../assets/banner_lp.png";
 import animation_lp from "../assets/girl-animation2.gif";
-import divider_lp from "../assets/divider_lp.png";
 import divider_lp2 from "../assets/divider_lp2.png";
 import bottom from "../assets/section7top.png";
-import plant2 from "../assets/plant2.png";
-import { firebaseApp } from "../AppContext";
 import ImageGrid from "../ImageGrid";
 import Search from "../Search";
 import PageSelect from "./PageSelect";
 import ReactModal from "react-modal";
 import Map from "../Map";
 
-const LandingPage = () => {
+const HomePage = () => {
   const [items, setItems] = useState([]);
   const [page, setPage] = React.useState(1);
   const [searchApplied, setSearchApplied] = useState(false);
@@ -26,7 +21,6 @@ const LandingPage = () => {
     fetch(`/getitems?page=${page}&limit=9`)
       .then((res) => res.json())
       .then((data) => {
-        console.log(data.data);
         setItems(data.data);
       });
   }, [page, deleteSearchTerm]);
@@ -79,9 +73,7 @@ const LandingPage = () => {
       </WrapperItemSection>
       {!searchApplied && <PageSelect page={page} setPage={setPage} />}
       <SecondDivider />
-      {/* <PlantSection>
-        <img src={plant2} />
-      </PlantSection> */}
+
       <Modal isOpen={openMap}>
         <Map items={items} />
         <button className="close-btn" onClick={(e) => setOpenMap(false)}>
@@ -93,6 +85,7 @@ const LandingPage = () => {
 };
 
 const Wrapper = styled.div`
+  min-height: 91vh;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -106,21 +99,12 @@ const Banner = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  //z-index: 1;
   @media (max-width: 900px) {
     width: 100%;
     height: 400px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-  }
-`;
-const PlantSection = styled.div`
-  width: 100%;
-  background-color: #ffd800;
-  img {
-    width: 200px;
-    height: 300px;
   }
 `;
 
@@ -149,11 +133,7 @@ const SecondDivider = styled.div`
 const SearchBar = styled(Search)`
   margin-left: 30px;
 `;
-const Input = styled.input`
-  width: 300px;
-  height: 40px;
-  border-radius: 5px;
-`;
+
 const WrapperItemSection = styled.div`
   background-color: #319365;
   //min-width: 70%;
@@ -200,4 +180,4 @@ const Modal = styled(ReactModal)`
   }
 `;
 
-export default LandingPage;
+export default HomePage;

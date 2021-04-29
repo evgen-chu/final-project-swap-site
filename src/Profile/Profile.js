@@ -5,8 +5,6 @@ import UploadModal from "./UploadModal";
 import { useParams } from "react-router-dom";
 import { IoFlowerOutline } from "react-icons/io5";
 import { AppContext } from "../AppContext";
-import { firebaseApp } from "../AppContext";
-import SunFlower from "../SunFlower";
 import backImg from "../assets/section11.png";
 import topImg from "../assets/section6top.png";
 import bottomImg from "../assets/section6topr.png";
@@ -15,12 +13,11 @@ import imgplant2 from "../assets/aloe.png";
 import ProfilePageSelect from "./ProfilePageSelect";
 
 const Profile = () => {
-  const { appUser, newOffers } = useContext(AppContext);
+  const { appUser } = useContext(AppContext);
   const { userId } = useParams();
   const [open, setOpen] = useState(false);
   const [userItems, setUserItems] = useState([]);
   const [currentUser, setCurrentUser] = useState();
-  //const [status, setStatus] = useState("loading");
   const [statusUser, setStatusUser] = useState("loading");
   const [deleteFlag, setDeleteFlag] = useState(true);
   const [itemAdded, setItemAdded] = useState(true);

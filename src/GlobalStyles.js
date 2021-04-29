@@ -2,6 +2,13 @@ import { createGlobalStyle } from "styled-components";
 
 export default createGlobalStyle`
 
+:root {
+  --yellow-color: #ffd800;
+  --general-font-family: 'Poppins', sans-serif;
+  --heading-font-family:"RocknRoll One", sans-serif;
+
+}
+
 body {
    // background-color: #ffd800;
     color: #414042;
