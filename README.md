@@ -1,71 +1,21 @@
-# Getting Started with Create React App
-
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
-
-## Available Scripts
-
-In the project directory, you can run:
-
-### `yarn start`
-
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
-
-### `yarn test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `yarn build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `yarn eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `yarn build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
 # final-project-swap-site
+Plant Swap is a web application for plant exchange. If you have several plants of the same species or your plant is too choosy that you'd love to exchange it for one less fastidious then welcome to Plant Swap!
+
+## Landing Page
+https://user-images.githubusercontent.com/67077579/116900436-ba481700-ac06-11eb-97a9-3aba8c970117.mp4
+## Home Page
+<img width="627" alt="HomePage" src="https://user-images.githubusercontent.com/67077579/116900495-cb912380-ac06-11eb-95be-9cc40d34e5a6.png">
+### Items on Map
+<img width="526" alt="ShowOnMAp" src="https://user-images.githubusercontent.com/67077579/116900866-3e020380-ac07-11eb-8407-bde5f99743d7.png">
+## Profile Page
+<img width="637" alt="ProfilePage" src="https://user-images.githubusercontent.com/67077579/116900595-e6fc2e80-ac06-11eb-9e10-b9435a023027.png">
+### Uploading form
+<img width="420" alt="UploadingForm" src="https://user-images.githubusercontent.com/67077579/116900704-098e4780-ac07-11eb-8ced-c2cad9f8ee2d.png">
+## Item Details Page
+<img width="638" alt="ItemPage" src="https://user-images.githubusercontent.com/67077579/116900546-db106c80-ac06-11eb-837e-abe345387139.png">
+## Offers Page
+<img width="629" alt="NewOffersPage" src="https://user-images.githubusercontent.com/67077579/116900609-ebc0e280-ac06-11eb-83d9-a580980dde92.png">
+### Seding Offer
+<img width="397" alt="SendOffer" src="https://user-images.githubusercontent.com/67077579/116900796-26c31600-ac07-11eb-82b4-1704e06229da.png">
+### Notifications
+<img width="439" alt="Notification" src="https://user-images.githubusercontent.com/67077579/116900912-4c501f80-ac07-11eb-8fb2-9f593c9ab422.png">
